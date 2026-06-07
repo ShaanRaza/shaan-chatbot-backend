@@ -360,6 +360,11 @@ Shaan's combination of technical depth (ML, SQL, Python automation) with busines
         if not self.is_loaded:
             raise RuntimeError("Knowledge base is not loaded. Ensure synchronous startup load succeeded.")
 
+        # Boost chatbot backend repo queries when pronouns or generic project terms are used
+        query_lower = query.lower()
+        if any(w in query_lower for w in ["your", "this repo", "this project", "this chatbot", "chatbot repository", "chatbot backend", "chatbot code", "you change"]):
+            query = query + " shaan-chatbot-backend"
+
         query_vec = self.vectorizer.transform([query])
         scores = cosine_similarity(query_vec, self.chunk_matrix)[0]
 
