@@ -43,7 +43,7 @@ except ImportError:
     print("[WARN] psycopg2 not installed. PostgreSQL integration disabled.")
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": ["https://shaan-chatbot-frontend.vercel.app", "http://localhost:5001", "http://127.0.0.1:5001"]}})
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 # ─────────────────────────────────────────────────────────────────
 # Constants & Paths

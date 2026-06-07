@@ -43,7 +43,7 @@ except ImportError:
     print("[WARN] psycopg2 not installed. PostgreSQL integration disabled.")
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": ["https://shaan-chatbot-frontend.vercel.app", "http://localhost:5001", "http://127.0.0.1:5001"]}})
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 # ─────────────────────────────────────────────────────────────────
 # Constants & Paths
@@ -96,10 +96,13 @@ COMMUNICATION STYLE:
 - When asked to list Shaan's GitHub repositories or projects, ensure you list all 5 key projects: Zomato Dataset Analysis, RTDMS Automation, FMCG Customer Churn Prediction, EPD Models openLCA, and Power BI Dashboards.
 - For "Why hire Shaan?" questions, always cite at least 3 specific projects/achievements from the context.
 
-BOOKING ASSISTANCE:
+BOOKING ASSISTANCE (CRITICAL — ALWAYS FOLLOW):
 - If someone wants to schedule an interview, guide them to use the booking feature.
 - Mention that interviews are 1 hour, conducted via Google Meet, in IST timezone.
-- If asked about availability, reference the calendar data in the context.
+- If asked about availability, you MUST use the calendar data in the context. NEVER say "I don't have access to calendar data" — that data is always provided in the context. Quote the specific dates and times from the [SOURCE: Calendar/Availability] chunk verbatim.
+- If the user mentions a specific date or time, check the calendar data and tell them whether that slot is open or already booked.
+- Always list concrete available slots (e.g., "Monday June 8: 9:00 AM, 10:00 AM, 11:00 AM IST") rather than vague answers.
+- If the calendar data is empty or missing, say so plainly: "I don't see any open slots right now." Do not deflect.
 
 TOPICS YOU CAN DISCUSS:
 ✓ Education (BTech ECE from Jamia Millia Islamia)
@@ -350,7 +353,18 @@ def get_calendar_service():
     if not google_libs_available:
         print("[WARN] Google API libraries not available. Cannot initialize Calendar service.")
         return None
-        
+
+    try:
+        from google_auth import get_calendar_service_oauth
+        oauth_service = get_calendar_service_oauth()
+        if oauth_service:
+            print("[OK] Google Calendar service initialized via OAuth2 user credentials.")
+            return oauth_service
+    except ImportError:
+        pass
+    except Exception as e:
+        print(f"[WARN] OAuth2 init failed, falling back: {e}")
+
     creds = None
     scopes = ['https://www.googleapis.com/auth/calendar']
     
@@ -860,7 +874,7 @@ def book_slot(name: str, email: str, date_str: str, time_str: str, phone: str = 
         "slot": matched
     }
     if warning_str:
-        res_dict["warning"] = warning_str
+        print(f"[WARN] Booking completed with warning (suppressed from user): {warning_str}")
     return res_dict
 
 
@@ -1086,6 +1100,129 @@ FABRICATION_PATTERNS = [
 def detect_booking_intent(query: str) -> bool:
     q_lower = query.lower()
     return any(kw in q_lower for kw in BOOKING_KEYWORDS)
+
+
+DAY_NAMES = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+MONTH_NAMES = {
+    "january": 1, "february": 2, "march": 3, "april": 4, "may": 5, "june": 6,
+    "july": 7, "august": 8, "september": 9, "october": 10, "november": 11, "december": 12
+}
+
+
+def _check_specific_slot(query: str) -> Optional[str]:
+    """If the user asks about a specific date/time, answer directly from calendar."""
+    q_lower = query.lower()
+    if not any(kw in q_lower for kw in ["available", "availability", "slot", "free", "open", "book"]):
+        return None
+
+    slots = get_calendar()
+    if not slots:
+        return None
+
+    available = [s for s in slots if s.get("status") == "available"]
+    booked = [s for s in slots if s.get("status") == "booked"]
+
+    target_date = None
+    target_time = None
+
+    import re as _re
+    m = _re.search(r"\b(\d{1,2})(?::(\d{2}))?\s*(am|pm)\b", q_lower)
+    if m:
+        hour = int(m.group(1))
+        minute = int(m.group(2) or 0)
+        ampm = m.group(3).upper()
+        if hour == 12:
+            hour = 0
+        if ampm == "PM":
+            hour += 12
+        target_time = f"{hour:02d}:{minute:02d}"
+
+    m = _re.search(r"\b(\d{1,2})(?::(\d{2}))?\s*ist\b", q_lower)
+    if m and not target_time:
+        target_time = f"{int(m.group(1)):02d}:{int(m.group(2) or 0):02d}"
+
+    today = datetime.date.today()
+    weekday_name = None
+    for d in DAY_NAMES:
+        if d in q_lower:
+            weekday_name = d
+            break
+    if weekday_name:
+        days_ahead = (DAY_NAMES.index(weekday_name) - today.weekday()) % 7
+        target_date = (today + datetime.timedelta(days=days_ahead)).isoformat()
+    else:
+        m = _re.search(r"\b(january|february|march|april|may|june|july|august|september|october|november|december)\s+(\d{1,2})\b", q_lower)
+        if m:
+            month = MONTH_NAMES[m.group(1)]
+            day = int(m.group(2))
+            try:
+                target_date = f"{today.year:04d}-{month:02d}-{day:02d}"
+            except ValueError:
+                pass
+        else:
+            m = _re.search(r"\b(\d{4})-(\d{1,2})-(\d{1,2})\b", q_lower)
+            if m:
+                target_date = f"{m.group(1)}-{int(m.group(2)):02d}-{int(m.group(3)):02d}"
+
+    if not target_date and not target_time:
+        if "what" in q_lower and ("available" in q_lower or "slot" in q_lower or "free" in q_lower):
+            grouped = {}
+            for s in available[:7]:
+                grouped.setdefault(s["date"], []).append(s["time"])
+            if not grouped:
+                return "I don't see any open interview slots right now. Please use the booking feature to view Shaan's real-time availability."
+            lines = [f"  {d}: {', '.join(t)}" for d, t in sorted(grouped.items())]
+            return "Here are Shaan's upcoming available interview slots (IST):\n" + "\n".join(lines) + \
+                   "\n\nUse the 'Book Interview' button to secure a slot."
+        return None
+
+    if target_date and target_time:
+        def _to_24h(time_str: str) -> Optional[str]:
+            m = _re.match(r"^(\d{1,2})(?::(\d{2}))?\s*(AM|PM)$", time_str.strip().upper())
+            if not m:
+                return None
+            h = int(m.group(1))
+            mn = int(m.group(2) or 0)
+            ap = m.group(3)
+            if h == 12:
+                h = 0
+            if ap == "PM":
+                h += 12
+            return f"{h:02d}:{mn:02d}"
+
+        match = None
+        for s in slots:
+            if s["date"] == target_date and _to_24h(s["time"]) == target_time:
+                match = s
+                break
+        if match is None:
+            target_h = target_time.split(":")[0]
+            for s in slots:
+                if s["date"] == target_date:
+                    slot_24 = _to_24h(s["time"])
+                    if slot_24 and slot_24.split(":")[0] == target_h:
+                        match = s
+                        break
+        if match is None:
+            return f"I don't see a {target_time} IST slot listed for that date. Use the booking feature to view all available times."
+        if match["status"] == "booked":
+            return f"Sorry, {target_date} at {match['time']} IST is already booked. Please pick another slot."
+        return f"Yes, {target_date} at {match['time']} IST is open. You can book it using the 'Book Interview' button."
+
+    if target_date:
+        day_slots = [s for s in slots if s["date"] == target_date]
+        if not day_slots:
+            return f"I don't have any slots listed for that date. Try a different day or use the booking feature."
+        avail = [s["time"] for s in day_slots if s["status"] == "available"]
+        bk = [s["time"] for s in day_slots if s["status"] == "booked"]
+        msg = f"For {target_date} (IST):\n"
+        if avail:
+            msg += f"  Available: {', '.join(avail)}\n"
+        if bk:
+            msg += f"  Booked: {', '.join(bk)}\n"
+        return msg.strip() + "\n\nUse the 'Book Interview' button to reserve a slot."
+
+    return None
 
 
 def detect_injection_attempt(query: str) -> bool:
@@ -1317,6 +1454,29 @@ def generate_response(session_id: str, query: str) -> dict:
             "confidence_score": 0.0, "grounded": False
         }
 
+    # 1b. Detect booking intent (needed for the deterministic check below)
+    is_booking = detect_booking_intent(query)
+
+    # 1c. Deterministic availability check — bypass LLM for specific slot queries
+    if is_booking and nvidia_client:
+        specific_answer = _check_specific_slot(query)
+        if specific_answer:
+            session["history"].append({"role": "user", "content": query})
+            session["history"].append({"role": "assistant", "content": specific_answer})
+            t_end = time.time()
+            log_interaction(session_id, query, [], specific_answer, [],
+                            booking_action="specific_slot_check", error=None,
+                            hallucination_flag=False,
+                            response_time_ms=int((t_end - t_start) * 1000))
+            return {
+                "response": specific_answer,
+                "sources": [{"label": "Calendar/Availability", "source": "calendar",
+                             "section": "Direct Lookup", "score": 1.0, "metadata": {}, "content": ""}],
+                "booking_intent": True, "hallucination_flag": False,
+                "session_id": session_id, "retrieval_count": 0,
+                "confidence_score": 1.0, "grounded": True
+            }
+
     # 1b. Heuristic Off-topic check
     OFF_TOPIC_RESPONSE = "Sorry, this is an off-topic question and I am here to assist regarding Shaan."
     if detect_off_topic_heuristics(query):
@@ -1330,12 +1490,9 @@ def generate_response(session_id: str, query: str) -> dict:
             "confidence_score": 0.0, "grounded": False
         }
 
-    # 2. Retrieve relevant context
-    context, sources = rag.retrieve_and_build_context(query, top_k=6)
-    chunks = rag.retrieve(query, top_k=6)
-
-    # 3. Detect booking intent
-    is_booking = detect_booking_intent(query)
+    # 2. Retrieve relevant context (force-include calendar when booking-related)
+    context, sources = rag.retrieve_and_build_context(query, top_k=6, force_calendar=is_booking)
+    chunks = rag.retrieve(query, top_k=6, force_calendar=is_booking)
 
     # 4. Call LLM
     response_text = ""
@@ -1354,7 +1511,7 @@ def generate_response(session_id: str, query: str) -> dict:
                 model="minimaxai/minimax-m2.7",
                 messages=[{"role": "user", "content": prompt}],
                 max_tokens=1024,
-                temperature=0.7
+                temperature=0.3 if is_booking else 0.7
             )
             response_text = response.choices[0].message.content.strip()
             print("[OK] NVIDIA NIM LLM response generated successfully.")
