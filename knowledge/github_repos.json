@@ -254,13 +254,25 @@
     "fetched_from_api": true,
     "commits": [
       {
+        "sha": "e8d5f0d",
+        "author": "Shaan Raza",
+        "date": "2026-06-07T20:56:06Z",
+        "message": "Add query expansion for chatbot repository queries in RAG"
+      },
+      {
+        "sha": "868b2db",
+        "author": "Shaan Raza",
+        "date": "2026-06-07T20:40:32Z",
+        "message": "Index GitHub commit history in chatbot RAG knowledge base"
+      },
+      {
         "sha": "aa2177e",
         "author": "Shaan Raza",
         "date": "2026-06-07T20:18:35Z",
         "message": "Initial commit"
       }
     ],
-    "rag_content": "GitHub Repository: shaan-chatbot-backend\nURL: https://github.com/ShaanRaza/shaan-chatbot-backend\nDescription: \nPrimary Language: Python\nTopics: N/A\n\nREADME:\n# Public AI Representative & Voice Agent\n\nThis project is an AI persona that can be interacted with via chat or voice. It is grounded in a real resume and live GitHub repository commit histories, and it can book actual calendar events via Google Calendar API.\n\n## Architecture Diagram\n\n```mermaid\nflowchart TD\n    User([User])\n    \n    subagent_chat[Flask Chat Server]\n    subagent_voice[Vapi Voice Agent]\n    deepgram[Deepgram STT/TTS]\n    \n    rag[Local BM25 RAG Engine]\n    corpus[(Resume & GitHub Corpus)]\n    llm[LLM - Chat/Generation]\n    calendar[Google Calendar API]\n\n    User -- \"Text Chat\" --> subagent_chat\n    User -- \"Voice Call\" --> subagent_voice\n    \n    subagent_voice <--> deepgram\n    subagent_voice -- \"Webhooks / System Prompts\" --> subagent_chat\n    \n    subagent_chat <--> rag\n    rag <--> corpus\n    \n    subagent_chat <--> llm\n    \n    subagent_chat -- \"Availability & Booking\" --> calendar\n```\n\n## Setup Instructions\n\n1. **Clone the repository:**\n   ```bash\n   git clone <repo-url>\n   cd shaan-chatbot\n   ```\n\n2. **Install dependencies:**\n   ```bash\n   pip install -r requirements.txt\n   ```\n\n3. **Configure Environment:**\n   Create a `config.json` with your API keys (Google Calendar, LLM, Vapi).\n   Ensure `google_credentials.json` is placed in the root directory for calendar access.\n\n4. **Run the Chat Server:**\n   ```bash\n   python app.py\n   ```\n   The server will start on port 5001.\n\n5. **Run the Voice Admin Dashboard (Optional):**\n   ```bash\n   cd ../voice-agent-interview\n   python app.py\n   ```\n\n## Cost Breakdown\n\n- **Chat Sessions:** $0 (Using local BM25 RAG and free-tier LLMs where applicable).\n- **Voice Calls:** ~$0.18 per minute (Vapi platform fee of $0.15/min + Deepgram STT/Cartesia TTS costs).\n\n\nRecent Commits:\n- Commit aa2177e by Shaan Raza on 2026-06-07T20:18:35Z: Initial commit"
+    "rag_content": "GitHub Repository: shaan-chatbot-backend\nURL: https://github.com/ShaanRaza/shaan-chatbot-backend\nDescription: \nPrimary Language: Python\nTopics: N/A\n\nREADME:\n# Public AI Representative & Voice Agent\n\nThis project is an AI persona that can be interacted with via chat or voice. It is grounded in a real resume and live GitHub repository commit histories, and it can book actual calendar events via Google Calendar API.\n\n## Architecture Diagram\n\n```mermaid\nflowchart TD\n    User([User])\n    \n    subagent_chat[Flask Chat Server]\n    subagent_voice[Vapi Voice Agent]\n    deepgram[Deepgram STT/TTS]\n    \n    rag[Local BM25 RAG Engine]\n    corpus[(Resume & GitHub Corpus)]\n    llm[LLM - Chat/Generation]\n    calendar[Google Calendar API]\n\n    User -- \"Text Chat\" --> subagent_chat\n    User -- \"Voice Call\" --> subagent_voice\n    \n    subagent_voice <--> deepgram\n    subagent_voice -- \"Webhooks / System Prompts\" --> subagent_chat\n    \n    subagent_chat <--> rag\n    rag <--> corpus\n    \n    subagent_chat <--> llm\n    \n    subagent_chat -- \"Availability & Booking\" --> calendar\n```\n\n## Setup Instructions\n\n1. **Clone the repository:**\n   ```bash\n   git clone <repo-url>\n   cd shaan-chatbot\n   ```\n\n2. **Install dependencies:**\n   ```bash\n   pip install -r requirements.txt\n   ```\n\n3. **Configure Environment:**\n   Create a `config.json` with your API keys (Google Calendar, LLM, Vapi).\n   Ensure `google_credentials.json` is placed in the root directory for calendar access.\n\n4. **Run the Chat Server:**\n   ```bash\n   python app.py\n   ```\n   The server will start on port 5001.\n\n5. **Run the Voice Admin Dashboard (Optional):**\n   ```bash\n   cd ../voice-agent-interview\n   python app.py\n   ```\n\n## Cost Breakdown\n\n- **Chat Sessions:** $0 (Using local BM25 RAG and free-tier LLMs where applicable).\n- **Voice Calls:** ~$0.18 per minute (Vapi platform fee of $0.15/min + Deepgram STT/Cartesia TTS costs).\n\n\nRecent Commits:\n- Commit e8d5f0d by Shaan Raza on 2026-06-07T20:56:06Z: Add query expansion for chatbot repository queries in RAG\n- Commit 868b2db by Shaan Raza on 2026-06-07T20:40:32Z: Index GitHub commit history in chatbot RAG knowledge base\n- Commit aa2177e by Shaan Raza on 2026-06-07T20:18:35Z: Initial commit"
   },
   {
     "name": "voice-agent-scheduler",

@@ -194,22 +194,25 @@ Shaan's combination of technical depth (ML, SQL, Python automation) with busines
     def _load_github_chunks(self) -> List[Dict]:
         chunks = []
         
-        # Try to fetch fresh GitHub data dynamically
-        try:
-            print("[RAG] Fetching latest GitHub repos dynamically...")
-            from github_fetcher import fetch_all_repos, GITHUB_USERNAME, KNOWN_REPOS, build_rag_content
-            repos = fetch_all_repos(GITHUB_USERNAME, list(KNOWN_REPOS))
-            # Prevent overwriting a good local cache with degraded fallback data if API is rate-limited
-            if os.path.exists(GITHUB_FILE) and not any(r.get("fetched_from_api") for r in repos):
-                raise RuntimeError("All GitHub API requests returned rate-limit (403) or failed. Preserving local cache.")
-            for repo in repos:
-                repo["rag_content"] = build_rag_content(repo)
-            os.makedirs("knowledge", exist_ok=True)
-            with open(GITHUB_FILE, "w") as f:
-                json.dump(repos, f, indent=2)
-            print("[RAG] Successfully fetched and cached live GitHub data.")
-        except Exception as e:
-            print(f"[RAG] WARNING: Failed to fetch live GitHub data, using local cache or fallback: {e}")
+        # Try to fetch fresh GitHub data dynamically if cache is missing or explicitly requested
+        if not os.path.exists(GITHUB_FILE) or os.environ.get("REFRESH_GITHUB_CACHE") == "true":
+            try:
+                print("[RAG] Fetching latest GitHub repos dynamically...")
+                from github_fetcher import fetch_all_repos, GITHUB_USERNAME, KNOWN_REPOS, build_rag_content
+                repos = fetch_all_repos(GITHUB_USERNAME, list(KNOWN_REPOS))
+                # Prevent overwriting a good local cache with degraded fallback data if API is rate-limited
+                if os.path.exists(GITHUB_FILE) and not any(r.get("fetched_from_api") for r in repos):
+                    raise RuntimeError("All GitHub API requests returned rate-limit (403) or failed. Preserving local cache.")
+                for repo in repos:
+                    repo["rag_content"] = build_rag_content(repo)
+                os.makedirs("knowledge", exist_ok=True)
+                with open(GITHUB_FILE, "w") as f:
+                    json.dump(repos, f, indent=2)
+                print("[RAG] Successfully fetched and cached live GitHub data.")
+            except Exception as e:
+                print(f"[RAG] WARNING: Failed to fetch live GitHub data, using local cache or fallback: {e}")
+        else:
+            print("[RAG] Using cached GitHub data from local storage.")
 
         if not os.path.exists(GITHUB_FILE):
             print(f"[RAG] WARNING: {GITHUB_FILE} not found. Run github_fetcher.py first.")
