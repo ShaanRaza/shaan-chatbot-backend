@@ -1,0 +1,22 @@
+# Exclude environment files
+.env
+
+# Exclude secrets
+secret.txt
+oauth_client.json
+oauth_token.json
+
+# Exclude large data
+*.csv
+
+# Python bytecode
+__pycache__/
+*.pyc
+
+# Local JSON datastores (since production uses PostgreSQL)
+calendar_store.json
+contacts_store.json
+
+# Local logs
+logs/
+*.log

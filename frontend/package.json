@@ -1,0 +1,10 @@
+{
+  "name": "shaan-chatbot-frontend",
+  "version": "1.0.0",
+  "description": "Frontend for Shaan Raza AI Representative Chatbot",
+  "main": "index.html",
+  "scripts": {
+    "build": "node build.js"
+  },
+  "dependencies": {}
+}

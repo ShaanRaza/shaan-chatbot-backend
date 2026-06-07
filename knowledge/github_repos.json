@@ -1,0 +1,124 @@
+[
+  {
+    "name": "Zomato_Dataset_Analysis",
+    "full_name": "ShaanRaza/Zomato_Dataset_Analysis",
+    "description": "Zomato Data Exploration and Analysis with SQL (SQL SERVER)",
+    "readme": "\n# Zomato Data Analysis \u2013 Market Expansion & Performance Insights\n\n## Overview\nIn this project, I worked on Zomato restaurant data to understand how restaurants perform across different cities and localities in India.\n\nThe main idea was not just to explore the data, but to figure out:\n- where demand is high but supply is low\n- which types of restaurants perform better\n- what factors (like delivery or pricing) affect ratings and engagement\n\n---\n\n## Problem Statement\nIf Zomato wants to expand or onboard more restaurants, where should they focus?\n\nTo answer this, I tried to:\n- identify underserved cities and localities\n- compare different price ranges and cuisines\n- check the impact of online delivery and table booking\n- find patterns in ratings and votes\n\n---\n\n## Approach\n\nI used SQL to break the problem into smaller parts:\n\n### 1. City-level analysis\n- counted number of restaurants per city\n- calculated votes per restaurant as a proxy for demand\n- compared cities to identify high-demand areas\n\n### 2. Locality-level analysis\n- ranked localities within each city\n- looked at which areas perform better in terms of ratings and votes\n\n### 3. Pricing & segment analysis\n- grouped restaurants by price range\n- checked how ratings and votes change across segments\n\n### 4. Delivery & booking impact\n- compared restaurants with and without online delivery\n- compared restaurants with and without table booking\n\n### 5. Cuisine analysis\n- split cuisine column and analyzed demand per cuisine\n- identified cuisines with higher engagement\n\n### 6. Expansion score\n- created a simple score using:\n  - votes per restaurant\n  - average rating\n  - number of restaurants (competition)\n- used this to rank cities for expansion\n\n---\n\n## Key Observations\n\n- Some cities have high votes per restaurant but fewer listings \u2192 possible unmet demand  \n- Mid-range restaurants tend to have better balance of rating and engagement  \n- Online delivery is generally associated with higher votes  \n- Highly saturated areas often show lower engagement per restaurant  \n\n---\n\n## Recommendations\n\nBased on the analysis:\n\n- Focus expansion on cities with high demand but lower restaurant density  \n- Prioritize mid-range pricing segments for better performance  \n- Encourage more restaurants to enable online delivery  \n- Target high-performing cuisines in underserved areas  \n\n---\n\n## Tech Used\n- SQL (CTEs, window functions, aggregations, views)\n\n---\n\n## Conclusion\nThis project helped me understand how SQL can be used not just for querying data, but for thinking about real business problems like expansion and performance.\n\n---\n\n## Author\nShaan Raza\n",
+    "readme_summary": "Project: Zomato Dataset Analysis\nTechnologies: SQL Server, Pandas, Python\nPurpose: Built a restaurant market analysis model to identify high-demand, low-supply cities and localities for expansion opportunities.\nKey Techniques: Window functions, CTEs, and joins to rank localities by restaurant density vs customer demand.\nProblem Solved: Helped identify underserved markets in the Zomato dataset where new restaurant openings would have the highest ROI.\nOutcome: Produced actionable market intelligence from raw restaurant transaction data.\nLessons Learned: Deep understanding of SQL analytical functions; how to translate business questions into structured query patterns.\nArchitecture: Data ingestion via Pandas \u2192 SQL Server for analytical queries \u2192 results exported for visualization.\n",
+    "language": "Python",
+    "topics": [
+      "sql",
+      "pandas",
+      "data-analysis",
+      "restaurant",
+      "market-analysis"
+    ],
+    "stars": 0,
+    "forks": 0,
+    "url": "https://github.com/ShaanRaza/Zomato_Dataset_Analysis",
+    "fetched_from_api": true,
+    "rag_content": "GitHub Repository: Zomato_Dataset_Analysis\nURL: https://github.com/ShaanRaza/Zomato_Dataset_Analysis\nDescription: Zomato Data Exploration and Analysis with SQL (SQL SERVER)\nPrimary Language: Python\nTopics: sql, pandas, data-analysis, restaurant, market-analysis\n\nDetailed Information:\nProject: Zomato Dataset Analysis\nTechnologies: SQL Server, Pandas, Python\nPurpose: Built a restaurant market analysis model to identify high-demand, low-supply cities and localities for expansion opportunities.\nKey Techniques: Window functions, CTEs, and joins to rank localities by restaurant density vs customer demand.\nProblem Solved: Helped identify underserved markets in the Zomato dataset where new restaurant openings would have the highest ROI.\nOutcome: Produced actionable market intelligence from raw restaurant transaction data.\nLessons Learned: Deep understanding of SQL analytical functions; how to translate business questions into structured query patterns.\nArchitecture: Data ingestion via Pandas \u2192 SQL Server for analytical queries \u2192 results exported for visualization.\n"
+  },
+  {
+    "name": "Automation-Code-for-RTDMS",
+    "full_name": "ShaanRaza/Automation-Code-for-RTDMS",
+    "description": "Automated web scraping of India's RTDMS portal using Selenium and BeautifulSoup to extract state- and category-wise data into Excel files.",
+    "readme": "# Automation-Code-for-RTDMS\nAutomated web scraping of India's RTDMS portal using Selenium and BeautifulSoup to extract state- and category-wise data into Excel files.\n\nThis project automates the extraction of state- and category-wise data from the \nGovernment of India's **RTDMS (Real-Time Data Monitoring System)** portal.\n\nThe script uses **Selenium** to navigate dynamically loaded web pages and **BeautifulSoup** \nto parse HTML content. Data is exported into structured **Excel files** for further analysis.\n\n---\n\n## Features\n- Fully automated scraping process (no manual navigation required)\n- Collects data **state by state** and **category by category**\n- Stores results in clean Excel sheets\n- Easy to extend for future categories or pages\n\n---\n\n## Tools and Libraries\n- Python 3.x\n- Selenium\n- BeautifulSoup (bs4)\n- Pandas (for data handling and Excel export)\n- OpenPyXL (for Excel writing, if needed)\n\n",
+    "readme_summary": "Project: Automation Code for RTDMS\nTechnologies: Python, Selenium, BeautifulSoup, Excel (openpyxl)\nPurpose: Automate extraction of environmental monitoring data from India's RTDMS portal which has dynamically loaded content.\nProblem Solved: The RTDMS portal uses JavaScript-rendered tables that cannot be scraped by simple HTTP requests. Selenium was used to control a headless browser to wait for dynamic content, and BeautifulSoup to parse the rendered HTML.\nArchitecture: Selenium WebDriver (headless Chrome) \u2192 Dynamic page wait \u2192 BeautifulSoup HTML parser \u2192 Pandas DataFrame \u2192 Excel output\nKey Challenges: Handling dynamic content loading, site-specific wait conditions, and anti-scraping measures.\nOutcome: Extracted state- and category-wise environmental data into structured Excel files, reducing manual effort from hours to minutes.\nFuture Improvements: Add scheduling via cron, cloud deployment, and automated email delivery of reports.\nLessons Learned: Proficiency in Selenium for dynamic pages, handling race conditions with waits, and reliable HTML parsing strategies.\n",
+    "language": "Python",
+    "topics": [
+      "selenium",
+      "web-scraping",
+      "automation",
+      "python",
+      "beautifulsoup",
+      "environment"
+    ],
+    "stars": 0,
+    "forks": 0,
+    "url": "https://github.com/ShaanRaza/Automation-Code-for-RTDMS",
+    "fetched_from_api": true,
+    "rag_content": "GitHub Repository: Automation-Code-for-RTDMS\nURL: https://github.com/ShaanRaza/Automation-Code-for-RTDMS\nDescription: Automated web scraping of India's RTDMS portal using Selenium and BeautifulSoup to extract state- and category-wise data into Excel files.\nPrimary Language: Python\nTopics: selenium, web-scraping, automation, python, beautifulsoup, environment\n\nDetailed Information:\nProject: Automation Code for RTDMS\nTechnologies: Python, Selenium, BeautifulSoup, Excel (openpyxl)\nPurpose: Automate extraction of environmental monitoring data from India's RTDMS portal which has dynamically loaded content.\nProblem Solved: The RTDMS portal uses JavaScript-rendered tables that cannot be scraped by simple HTTP requests. Selenium was used to control a headless browser to wait for dynamic content, and BeautifulSoup to parse the rendered HTML.\nArchitecture: Selenium WebDriver (headless Chrome) \u2192 Dynamic page wait \u2192 BeautifulSoup HTML parser \u2192 Pandas DataFrame \u2192 Excel output\nKey Challenges: Handling dynamic content loading, site-specific wait conditions, and anti-scraping measures.\nOutcome: Extracted state- and category-wise environmental data into structured Excel files, reducing manual effort from hours to minutes.\nFuture Improvements: Add scheduling via cron, cloud deployment, and automated email delivery of reports.\nLessons Learned: Proficiency in Selenium for dynamic pages, handling race conditions with waits, and reliable HTML parsing strategies.\n"
+  },
+  {
+    "name": "EPD-Models-openLCA",
+    "full_name": "ShaanRaza/EPD-Models-openLCA",
+    "description": "Created openLCA models using EXIOBASE and Ecoinvent to generate Environmental Product Declarations (EPDs) for clients like MSSL Group and Raymond.",
+    "readme": "# EPD Models using openLCA\n\nThis repository showcases Environmental Product Declarations (EPDs) generated using \n**openLCA**, **EXIOBASE**, and **Ecoinvent** databases. These models were developed to \nanalyze life cycle impacts and produce ISO 14025 and EN 15804 compliant EPDs for \nclients such as **MSSL Group** and **Raymond**.\n\n---\n\n## Project Overview\n- **Goal:** Streamline Life Cycle Assessment (LCA) workflows to generate verified EPDs.\n- **Tools Used:** \n  - openLCA for LCA modeling\n  - EXIOBASE and Ecoinvent databases for environmental impact data\n  - Python for data preparation and automation\n- **Impact:** Reduced reporting time by **30%** through optimized data modeling.\n\n---\n\n## Features\n- Developed **10+ openLCA models** for products across India, Bangladesh, and Vietnam sites.\n- Created documentation aligned with **ISO 14025** and **EN 15804** standards.\n- Integrated datasets from EXIOBASE and Ecoinvent to improve data accuracy.\n- Automated parts of the data import/export process to minimize manual effort.\n\n\n",
+    "readme_summary": "Project: EPD Models using openLCA\nTechnologies: openLCA, EXIOBASE, Ecoinvent, ISO 14025, EN 15804\nPurpose: Created Life Cycle Assessment (LCA) models to generate ISO 14025 and EN 15804 compliant Environmental Product Declarations (EPDs) for major industrial clients.\nClients: MSSL Group (Motherson Sumi Systems) and Raymond (textile conglomerate)\nProblem Solved: Companies needed certified EPDs to comply with environmental disclosure requirements and reduce supply chain carbon footprint reporting burden.\nArchitecture: Data collection \u2192 openLCA model setup \u2192 EXIOBASE/Ecoinvent database linking \u2192 Impact assessment \u2192 EPD report generation\nKey Techniques: Scope 1, 2, and 3 emissions modeling, system boundary definition, cut-off criteria application per ISO standards.\nOutcome: Delivered compliant EPD documentation for two major enterprise clients, supporting their sustainability reporting obligations.\nLessons Learned: Deep understanding of LCA methodology, GHG accounting standards, and how to translate complex supply chain data into standardized environmental reports.\n",
+    "language": "Python",
+    "topics": [
+      "lca",
+      "sustainability",
+      "openLCA",
+      "carbon",
+      "EPD",
+      "environment"
+    ],
+    "stars": 0,
+    "forks": 0,
+    "url": "https://github.com/ShaanRaza/EPD-Models-openLCA",
+    "fetched_from_api": true,
+    "rag_content": "GitHub Repository: EPD-Models-openLCA\nURL: https://github.com/ShaanRaza/EPD-Models-openLCA\nDescription: Created openLCA models using EXIOBASE and Ecoinvent to generate Environmental Product Declarations (EPDs) for clients like MSSL Group and Raymond.\nPrimary Language: Python\nTopics: lca, sustainability, openLCA, carbon, EPD, environment\n\nDetailed Information:\nProject: EPD Models using openLCA\nTechnologies: openLCA, EXIOBASE, Ecoinvent, ISO 14025, EN 15804\nPurpose: Created Life Cycle Assessment (LCA) models to generate ISO 14025 and EN 15804 compliant Environmental Product Declarations (EPDs) for major industrial clients.\nClients: MSSL Group (Motherson Sumi Systems) and Raymond (textile conglomerate)\nProblem Solved: Companies needed certified EPDs to comply with environmental disclosure requirements and reduce supply chain carbon footprint reporting burden.\nArchitecture: Data collection \u2192 openLCA model setup \u2192 EXIOBASE/Ecoinvent database linking \u2192 Impact assessment \u2192 EPD report generation\nKey Techniques: Scope 1, 2, and 3 emissions modeling, system boundary definition, cut-off criteria application per ISO standards.\nOutcome: Delivered compliant EPD documentation for two major enterprise clients, supporting their sustainability reporting obligations.\nLessons Learned: Deep understanding of LCA methodology, GHG accounting standards, and how to translate complex supply chain data into standardized environmental reports.\n"
+  },
+  {
+    "name": "PowerBI-Dashboards",
+    "full_name": "ShaanRaza/PowerBI-Dashboards",
+    "description": "A collection of interactive Power BI dashboards showcasing data analysis and visualization across multiple domains.",
+    "readme": "# PowerBI-Dashboards\nA collection of interactive Power BI dashboards showcasing data analysis and visualization across multiple domains.\n",
+    "readme_summary": "Project: PowerBI Dashboards Collection\nTechnologies: Power BI, DAX, SQL, Excel\nPurpose: A portfolio of interactive Power BI dashboards demonstrating data analysis and visualization capabilities across multiple business domains.\nKey Dashboards:\n- Scope 1-3 GHG Emissions Tracking Dashboard: Monitors carbon emissions across organizational boundaries with drill-down by category\n- Sales & Revenue Analytics Dashboard: KPI tracking with trend analysis and forecasting\n- Customer Segmentation Dashboard: RFM-based segmentation with DAX calculations\n- Operational KPI Dashboard: AHT, SLA, CSAT, and FRT monitoring for contact center operations\nKey Features: DAX measures, calculated columns, drill-through pages, dynamic filtering, cost per ton of CO2 metrics\nCertification: Shaan holds the PL-300 (Power BI Data Analyst) certification from Microsoft.\nOutcome: Demonstrated ability to translate complex datasets into actionable executive-level dashboards.\nLessons Learned: Advanced DAX pattern design, data model optimization, and UX best practices for business intelligence tools.\n",
+    "language": "DAX",
+    "topics": [
+      "power-bi",
+      "dax",
+      "data-visualization",
+      "business-intelligence",
+      "analytics"
+    ],
+    "stars": 0,
+    "forks": 0,
+    "url": "https://github.com/ShaanRaza/PowerBI-Dashboards",
+    "fetched_from_api": true,
+    "rag_content": "GitHub Repository: PowerBI-Dashboards\nURL: https://github.com/ShaanRaza/PowerBI-Dashboards\nDescription: A collection of interactive Power BI dashboards showcasing data analysis and visualization across multiple domains.\nPrimary Language: DAX\nTopics: power-bi, dax, data-visualization, business-intelligence, analytics\n\nDetailed Information:\nProject: PowerBI Dashboards Collection\nTechnologies: Power BI, DAX, SQL, Excel\nPurpose: A portfolio of interactive Power BI dashboards demonstrating data analysis and visualization capabilities across multiple business domains.\nKey Dashboards:\n- Scope 1-3 GHG Emissions Tracking Dashboard: Monitors carbon emissions across organizational boundaries with drill-down by category\n- Sales & Revenue Analytics Dashboard: KPI tracking with trend analysis and forecasting\n- Customer Segmentation Dashboard: RFM-based segmentation with DAX calculations\n- Operational KPI Dashboard: AHT, SLA, CSAT, and FRT monitoring for contact center operations\nKey Features: DAX measures, calculated columns, drill-through pages, dynamic filtering, cost per ton of CO2 metrics\nCertification: Shaan holds the PL-300 (Power BI Data Analyst) certification from Microsoft.\nOutcome: Demonstrated ability to translate complex datasets into actionable executive-level dashboards.\nLessons Learned: Advanced DAX pattern design, data model optimization, and UX best practices for business intelligence tools.\n"
+  },
+  {
+    "name": "FMCG-Customer-Churn-Prediction",
+    "full_name": "ShaanRaza/FMCG-Customer-Churn-Prediction",
+    "description": "ML pipeline for customer churn prediction using RFM analysis, Scikit-Learn, and XGBoost.",
+    "readme": "",
+    "readme_summary": "Project: FMCG Customer Churn Prediction\nTechnologies: Python, NumPy, Pandas, Scikit-Learn, XGBoost, K-Means\nDataset: 10,000+ transaction records from an FMCG (Fast-Moving Consumer Goods) company\nPurpose: Predict which customers are likely to churn so the business can intervene with targeted retention strategies.\nMethodology:\n1. RFM Analysis (Recency, Frequency, Monetary): Engineered customer behavior features\n2. Data Preprocessing: Handling missing values, feature scaling, encoding\n3. Classification Models: Logistic Regression, Random Forest, XGBoost\n4. Customer Segmentation: K-Means clustering to group customers by churn risk and behavior\nPerformance Metrics: ROC-AUC: 0.92+, F1-Score: 0.85+ (XGBoost model)\nKey Insight: High-recency, low-frequency customers showed 3x higher churn probability than engaged regulars.\nArchitecture: Data Ingestion \u2192 EDA \u2192 Feature Engineering (RFM) \u2192 Model Training \u2192 Evaluation \u2192 Segmentation\nLessons Learned: Practical application of ML pipeline from raw data to business insights; importance of feature engineering over model complexity for tabular data.\nFuture Improvements: Real-time scoring API, SHAP explainability, A/B test framework for retention interventions.\n",
+    "language": "Python",
+    "topics": [
+      "machine-learning",
+      "churn-prediction",
+      "xgboost",
+      "scikit-learn",
+      "rfm",
+      "python"
+    ],
+    "stars": 0,
+    "forks": 0,
+    "url": "https://github.com/ShaanRaza/FMCG-Customer-Churn-Prediction",
+    "fetched_from_api": false,
+    "rag_content": "GitHub Repository: FMCG-Customer-Churn-Prediction\nURL: https://github.com/ShaanRaza/FMCG-Customer-Churn-Prediction\nDescription: ML pipeline for customer churn prediction using RFM analysis, Scikit-Learn, and XGBoost.\nPrimary Language: Python\nTopics: machine-learning, churn-prediction, xgboost, scikit-learn, rfm, python\n\nDetailed Information:\nProject: FMCG Customer Churn Prediction\nTechnologies: Python, NumPy, Pandas, Scikit-Learn, XGBoost, K-Means\nDataset: 10,000+ transaction records from an FMCG (Fast-Moving Consumer Goods) company\nPurpose: Predict which customers are likely to churn so the business can intervene with targeted retention strategies.\nMethodology:\n1. RFM Analysis (Recency, Frequency, Monetary): Engineered customer behavior features\n2. Data Preprocessing: Handling missing values, feature scaling, encoding\n3. Classification Models: Logistic Regression, Random Forest, XGBoost\n4. Customer Segmentation: K-Means clustering to group customers by churn risk and behavior\nPerformance Metrics: ROC-AUC: 0.92+, F1-Score: 0.85+ (XGBoost model)\nKey Insight: High-recency, low-frequency customers showed 3x higher churn probability than engaged regulars.\nArchitecture: Data Ingestion \u2192 EDA \u2192 Feature Engineering (RFM) \u2192 Model Training \u2192 Evaluation \u2192 Segmentation\nLessons Learned: Practical application of ML pipeline from raw data to business insights; importance of feature engineering over model complexity for tabular data.\nFuture Improvements: Real-time scoring API, SHAP explainability, A/B test framework for retention interventions.\n"
+  },
+  {
+    "name": "Case-Competitions",
+    "full_name": "ShaanRaza/Case-Competitions",
+    "description": "Secured 3rd position among 380+ participants in Jamia Case Challenge for SweepIt solution.",
+    "readme": "",
+    "readme_summary": "Project: Case Competitions Portfolio\nPurpose: Repository of business case solutions and competition entries demonstrating strategic thinking and analytical skills.\nKey Achievement: Secured 3rd position among 380+ participants in the Jamia Case Challenge for developing a comprehensive business solution for SweepIt (now rebranded as Pronto), a rapidly growing startup in the on-demand services sector.\nCase: SweepIt / Pronto \u2014 On-Demand Home Services Startup\nProblem: Identify growth strategy, competitive positioning, and monetization optimization for a startup competing in a crowded market.\nSolution Framework: Market sizing, competitive analysis, unit economics modeling, growth hacking strategy, and technology roadmap.\nTools Used: Excel for financial modeling, PowerPoint for presentation, market research methodologies.\nOutcome: Top-3 finish, recognition from industry judges.\nSkills Demonstrated: Structured problem-solving, market analysis, financial modeling, strategic communication.\n",
+    "language": "N/A",
+    "topics": [
+      "case-study",
+      "business-analysis",
+      "strategy",
+      "competition"
+    ],
+    "stars": 0,
+    "forks": 0,
+    "url": "https://github.com/ShaanRaza/Case-Competitions",
+    "fetched_from_api": true,
+    "rag_content": "GitHub Repository: Case-Competitions\nURL: https://github.com/ShaanRaza/Case-Competitions\nDescription: Secured 3rd position among 380+ participants in Jamia Case Challenge for SweepIt solution.\nPrimary Language: N/A\nTopics: case-study, business-analysis, strategy, competition\n\nDetailed Information:\nProject: Case Competitions Portfolio\nPurpose: Repository of business case solutions and competition entries demonstrating strategic thinking and analytical skills.\nKey Achievement: Secured 3rd position among 380+ participants in the Jamia Case Challenge for developing a comprehensive business solution for SweepIt (now rebranded as Pronto), a rapidly growing startup in the on-demand services sector.\nCase: SweepIt / Pronto \u2014 On-Demand Home Services Startup\nProblem: Identify growth strategy, competitive positioning, and monetization optimization for a startup competing in a crowded market.\nSolution Framework: Market sizing, competitive analysis, unit economics modeling, growth hacking strategy, and technology roadmap.\nTools Used: Excel for financial modeling, PowerPoint for presentation, market research methodologies.\nOutcome: Top-3 finish, recognition from industry judges.\nSkills Demonstrated: Structured problem-solving, market analysis, financial modeling, strategic communication.\n"
+  }
+]

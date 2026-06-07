@@ -1,0 +1,10 @@
+google_credentials.json
+config.json
+calendar_store.json
+contacts_store.json
+logs/
+scratch/test_key.py
+__pycache__/
+.env
+backend/config.json
+backend/google_credentials.json

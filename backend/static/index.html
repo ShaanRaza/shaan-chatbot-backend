@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shaan Raza — Data Analyst & AI Developer</title>
+  <meta name="description" content="Portfolio of Shaan Raza, Data Analyst and AI Developer based in New Delhi, India. Python, SQL, Power BI, Machine Learning." />
+  <meta property="og:title" content="Shaan Raza — Data Analyst & AI Developer" />
+  <meta property="og:description" content="Data Analyst & AI Developer building ML pipelines, dashboards, and automation." />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600&family=Playfair+Display:ital,wght@1,400;1,500&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💻</text></svg>" />
+  <script>
+    window.API_BASE_URL = "API_URL_PLACEHOLDER";
+  </script>
+</head>
+<body>
+
+  <!-- ── Loading Overlay ──────────────────────────────── -->
+  <div id="loadingOverlay" class="loading-overlay">
+    <div class="loading-logo">SR</div>
+    <div class="loading-text">Initializing portfolio<span class="loading-dots"><span>.</span><span>.</span><span>.</span></span></div>
+  </div>
+
+  <!-- ── Background Layers ───────────────────────────── -->
+  <div class="bg-grid" aria-hidden="true"></div>
+  <div class="bg-blob bg-blob-1" aria-hidden="true"></div>
+  <div class="bg-blob bg-blob-2" aria-hidden="true"></div>
+  <div class="bg-code" aria-hidden="true"></div>
+
+  <!-- ── Navigation ──────────────────────────────────── -->
+  <nav class="nav" id="nav">
+    <div class="nav-inner">
+      <a class="nav-brand" href="#hero">
+        <span class="nav-logo">SR</span>
+        <span class="nav-name">shaan<span class="nav-name-accent">.</span></span>
+      </a>
+      <div class="nav-links">
+        <a href="#hero" class="nav-link">// home</a>
+        <a href="#stats" class="nav-link">// stats</a>
+        <a href="#work" class="nav-link">// work</a>
+        <a href="#chat-section" class="nav-link">// ai</a>
+        <a href="#contact" class="nav-link">// contact</a>
+      </div>
+      <div class="nav-actions">
+        <span class="status-dot" id="statusDot">connecting</span>
+        <button class="icon-btn" id="adminBtn" title="Admin Panel" aria-label="Admin Panel">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /></svg>
+        </button>
+        <button class="icon-btn" id="evalBtn" title="Evaluation Report" aria-label="Evaluation Report">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z" /></svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── Marquee Ticker ──────────────────────────────── -->
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track">
+      <div class="ticker-item"><span class="ticker-dot"></span>Python</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>SQL</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>Power BI · PL-300</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>Pandas</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>Scikit-Learn</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>XGBoost</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>Selenium</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>BeautifulSoup</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>Tableau</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>Snowflake</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>Hadoop</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>openLCA</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>Machine Learning</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>NLP</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>Data Engineering</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>Python</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>SQL</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>Power BI · PL-300</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>Pandas</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>Scikit-Learn</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>XGBoost</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>Selenium</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>BeautifulSoup</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>Tableau</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>Snowflake</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>Hadoop</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>openLCA</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>Machine Learning</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>NLP</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>Data Engineering</div>
+    </div>
+  </div>
+
+  <main class="main">
+
+    <!-- ── Hero ──────────────────────────────────────── -->
+    <section class="hero" id="hero">
+      <div class="hero-grid">
+
+        <div class="hero-text">
+          <div class="section-label">
+            <span class="section-prefix">// 01</span>
+            <span class="section-name">introduction</span>
+          </div>
+
+          <div class="hero-eyebrow">
+            <span class="status-pill">
+              <span class="status-ping"></span>
+              <span class="status-ping-dot"></span>
+              available for hire
+            </span>
+            <span class="hero-loc">New Delhi, India</span>
+          </div>
+
+          <h1 class="hero-name">
+            <span class="hero-name-sans">Shaan</span>
+            <span class="hero-name-serif">Raza</span>
+            <span class="hero-name-dot">.</span>
+          </h1>
+
+          <div class="hero-title">
+            <span class="hero-prefix">&gt;</span> Data Analyst <span class="hero-amp">&amp;</span> AI Developer
+            <span class="cursor-blink">_</span>
+          </div>
+
+          <p class="hero-bio">
+            I build <strong>ML pipelines</strong>, <strong>BI dashboards</strong>, and <strong>automation tools</strong>
+            that turn messy data into decisions. Currently shipping production RAG systems and
+            forecasting models from a small desk in Delhi.
+          </p>
+
+          <div class="hero-ctas">
+            <a href="#chat-section" class="btn-primary">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="14" height="14"><path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" /></svg>
+              Ask my AI
+            </a>
+            <button class="btn-secondary" id="bookCTABtn">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="14" height="14"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" /></svg>
+              Book interview
+            </button>
+            <div id="bookingTimeInfo" class="booking-time-info" style="display:none"></div>
+          </div>
+
+          <div class="hero-meta">
+            <div class="hero-meta-item">
+              <span class="hero-meta-key">role</span>
+              <span class="hero-meta-val">Data Analyst · AI Dev</span>
+            </div>
+            <div class="hero-meta-item">
+              <span class="hero-meta-key">stack</span>
+              <span class="hero-meta-val">Python · SQL · Power BI</span>
+            </div>
+            <div class="hero-meta-item">
+              <span class="hero-meta-key">status</span>
+              <span class="hero-meta-val accent">open to work</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hero side: terminal widget -->
+        <div class="hero-side">
+          <div class="terminal">
+            <div class="terminal-bar">
+              <span class="terminal-dot red"></span>
+              <span class="terminal-dot yellow"></span>
+              <span class="terminal-dot green"></span>
+              <span class="terminal-title">~/shaan — profile.sh</span>
+              <span class="terminal-meta" id="terminalMeta">01/19</span>
+            </div>
+            <div class="terminal-body">
+              <div class="terminal-line"><span class="terminal-prompt">$</span> <span class="terminal-cmd" data-text="whoami"></span><span class="terminal-cursor">▋</span></div>
+              <div class="terminal-line terminal-output">&gt; data_analyst + ai_developer</div>
+              <div class="terminal-line"><span class="terminal-prompt">$</span> <span class="terminal-cmd" data-text="cat ./resume.json | jq .highlights"></span></div>
+              <div class="terminal-line terminal-output">&gt; <span class="hl-yellow">3</span> internships · <span class="hl-blue">5</span> shipped projects</div>
+              <div class="terminal-line terminal-output">&gt; <span class="hl-yellow">8.2</span> CGPA · <span class="hl-blue">150+</span> SQL solved</div>
+              <div class="terminal-line"><span class="terminal-prompt">$</span> <span class="terminal-cmd" data-text="git log --oneline | head -3"></span></div>
+              <div class="terminal-line terminal-output">&gt; <span class="hl-green">a1b2c3</span> FMCG Churn (XGBoost · 0.92 AUC)</div>
+              <div class="terminal-line terminal-output">&gt; <span class="hl-green">d4e5f6</span> RTDMS Automation (Selenium)</div>
+              <div class="terminal-line terminal-output">&gt; <span class="hl-green">g7h8i9</span> Zomato Analysis (SQL · Pandas)</div>
+              <div class="terminal-line"><span class="terminal-prompt">$</span> <span class="terminal-cmd" data-text="ask --ai 'what can shaan do?'"></span></div>
+              <div class="terminal-line terminal-output terminal-blink-line">&gt; scroll down ↓ or hit <span class="hl-blue">ask my ai</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Stats Grid ────────────────────────────────── -->
+    <section class="section" id="stats">
+      <div class="section-label">
+        <span class="section-prefix">// 02</span>
+        <span class="section-name">stats.log</span>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5" /></svg>
+          </div>
+          <div class="stat-value">8.2</div>
+          <div class="stat-label">CGPA</div>
+          <div class="stat-sub">BTech · ECE · JMI</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" /></svg>
+          </div>
+          <div class="stat-value">150<span class="stat-suffix">+</span></div>
+          <div class="stat-label">SQL Solved</div>
+          <div class="stat-sub">LeetCode · HackerRank</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 0 1 3 3h-15a3 3 0 0 1 3-3m9 0v-4.5A3.375 3.375 0 0 0 19.125 10.875 3.375 3.375 0 0 0 16.5 7.5h0m-9 11.25V18a3 3 0 0 0-3 3h15a3 3 0 0 0-3-3v0m-9-4.5h9m-9 0a3 3 0 0 1-3-3V7.5a3 3 0 0 1 3-3h9a3 3 0 0 1 3 3v3.75a3 3 0 0 1-3 3Z" /></svg>
+          </div>
+          <div class="stat-value">3<span class="stat-suffix">rd</span></div>
+          <div class="stat-label">Case Comp</div>
+          <div class="stat-sub">National finalist</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" /></svg>
+          </div>
+          <div class="stat-value">5</div>
+          <div class="stat-label">Projects</div>
+          <div class="stat-sub">ML · Automation · BI</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Work / Experience ──────────────────────────── -->
+    <section class="section" id="work">
+      <div class="section-label">
+        <span class="section-prefix">// 03</span>
+        <span class="section-name">work.tsx</span>
+      </div>
+
+      <div class="work-grid">
+        <button class="work-card" onclick="sendSuggestedQuestion('Tell me about Shaan\u2019s work at Carbon Crunch.'); return false;">
+          <div class="work-card-head">
+            <span class="work-card-period">2024 — Present</span>
+            <span class="work-card-arrow">→</span>
+          </div>
+          <div class="work-card-role">Data Analyst</div>
+          <div class="work-card-org">Carbon Crunch</div>
+          <div class="work-card-desc">Sustainability metrics dashboards, ML-driven emissions forecasting, executive reporting pipelines.</div>
+          <div class="work-card-tags">
+            <span>Python</span><span>Power BI</span><span>XGBoost</span>
+          </div>
+        </button>
+
+        <button class="work-card" onclick="sendSuggestedQuestion('What did Shaan do at Crystal Technology Services?'); return false;">
+          <div class="work-card-head">
+            <span class="work-card-period">2023 — 2024</span>
+            <span class="work-card-arrow">→</span>
+          </div>
+          <div class="work-card-role">Business Analyst Intern</div>
+          <div class="work-card-org">Crystal Technology Services</div>
+          <div class="work-card-desc">Stakeholder interviews, KPI definitions, dashboard prototypes for ops and finance teams.</div>
+          <div class="work-card-tags">
+            <span>SQL</span><span>Tableau</span><span>Excel</span>
+          </div>
+        </button>
+
+        <button class="work-card" onclick="sendSuggestedQuestion('What was Shaan\u2019s role at Pregrad?'); return false;">
+          <div class="work-card-head">
+            <span class="work-card-period">2023</span>
+            <span class="work-card-arrow">→</span>
+          </div>
+          <div class="work-card-role">BDev Intern</div>
+          <div class="work-card-org">Pregrad</div>
+          <div class="work-card-desc">Cold-outreach automation, lead scoring experiments, growth analytics for the funnel.</div>
+          <div class="work-card-tags">
+            <span>Selenium</span><span>BeautifulSoup</span><span>SQL</span>
+          </div>
+        </button>
+      </div>
+
+      <div class="projects-row">
+        <button class="project-pill" onclick="sendSuggestedQuestion('Explain the FMCG Customer Churn Prediction project.'); return false;">
+          <span class="project-pill-key">proj_01</span> FMCG Churn <span class="project-pill-meta">XGBoost · 0.92 AUC</span>
+        </button>
+        <button class="project-pill" onclick="sendSuggestedQuestion('Tell me about the RTDMS automation project.'); return false;">
+          <span class="project-pill-key">proj_02</span> RTDMS Automation <span class="project-pill-meta">Selenium · -87% manual</span>
+        </button>
+        <button class="project-pill" onclick="sendSuggestedQuestion('Explain the Zomato Dataset Analysis project.'); return false;">
+          <span class="project-pill-key">proj_03</span> Zomato Analysis <span class="project-pill-meta">SQL · Pandas</span>
+        </button>
+        <button class="project-pill" onclick="sendSuggestedQuestion('Tell me about the EPD Models openLCA project.'); return false;">
+          <span class="project-pill-key">proj_04</span> EPD / openLCA <span class="project-pill-meta">LCA · Sustainability</span>
+        </button>
+        <button class="project-pill" onclick="sendSuggestedQuestion('Tell me about the Power BI Dashboards project.'); return false;">
+          <span class="project-pill-key">proj_05</span> Power BI Dashboards <span class="project-pill-meta">PL-300</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ── Chat Section ───────────────────────────────── -->
+    <section class="section chat-section" id="chat-section">
+      <div class="section-label">
+        <span class="section-prefix">// 04</span>
+        <span class="section-name">ai.rep.ts</span>
+      </div>
+      <div class="chat-section-head">
+        <h2 class="chat-section-title">
+          Talk to my <span class="accent-blue">AI representative</span>
+        </h2>
+        <p class="chat-section-sub">
+          A grounded RAG agent trained on my resume, projects, and GitHub.
+          Ask anything — it'll only answer from the source material.
+        </p>
+      </div>
+
+      <div class="glass-card chat-panel">
+        <div class="chat-header">
+          <div class="chat-header-info">
+            <div class="chat-bot-avatar">🤖</div>
+            <div>
+              <div class="chat-bot-name">Shaan's AI Representative</div>
+              <div class="chat-bot-sub">Grounded in resume, projects &amp; GitHub data</div>
+            </div>
+          </div>
+          <div class="chat-header-actions">
+            <button class="icon-btn" id="clearBtn" title="Clear conversation" aria-label="Clear conversation">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="messages-area" id="messagesArea" role="log" aria-live="polite" aria-label="Chat messages">
+          <div class="welcome-message" id="welcomeMsg">
+            <div class="welcome-icon">🤖</div>
+            <div class="welcome-title">Hi! I'm Shaan's AI Representative</div>
+            <div class="welcome-subtitle">
+              Ask me anything about Shaan's background, projects, skills, or experience — or schedule an interview. I'm grounded in his resume and GitHub data.
+            </div>
+            <div class="suggested-questions">
+              <button class="suggest-btn" onclick="sendSuggestedQuestion('Tell me about Shaan Raza.')">Who is Shaan?</button>
+              <button class="suggest-btn" onclick="sendSuggestedQuestion('Why should we hire Shaan?')">Why hire Shaan?</button>
+              <button class="suggest-btn" onclick="sendSuggestedQuestion('What internships has Shaan completed?')">Internships</button>
+              <button class="suggest-btn" onclick="sendSuggestedQuestion('Explain the FMCG Customer Churn Prediction project.')">ML Projects</button>
+              <button class="suggest-btn" onclick="sendSuggestedQuestion('What technical skills does Shaan have?')">Skills</button>
+              <button class="suggest-btn" onclick="sendSuggestedQuestion('When is Shaan available for an interview?')">Schedule Interview</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="chat-input-area">
+          <div class="input-row">
+            <div class="chat-input-wrapper">
+              <textarea
+                class="chat-input"
+                id="chatInput"
+                placeholder="Ask about Shaan's experience, projects, skills…"
+                rows="1"
+                aria-label="Your message"
+              ></textarea>
+            </div>
+            <button class="send-btn" id="sendBtn" aria-label="Send message">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" /></svg>
+            </button>
+          </div>
+          <div class="input-hint">Press <kbd>Enter</kbd> to send · <kbd>Shift+Enter</kbd> for new line</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Contact / Booking ──────────────────────────── -->
+    <section class="section contact-section" id="contact">
+      <div class="section-label">
+        <span class="section-prefix">// 05</span>
+        <span class="section-name">contact.sh</span>
+      </div>
+
+      <div class="contact-card glass-card">
+        <div class="contact-text">
+          <h2 class="contact-title">
+            Let's <span class="accent-blue">talk</span>.
+          </h2>
+          <p class="contact-sub">
+            Open to full-time data analyst / AI developer roles, freelance BI work, and interesting collaborations.
+            Book a 1-hour Google Meet interview or just ping my AI above.
+          </p>
+          <div class="contact-channels">
+            <a class="contact-channel" href="https://github.com/ShaanRaza" target="_blank" rel="noopener">
+              <span class="contact-channel-key">gh</span> github.com/ShaanRaza
+            </a>
+            <a class="contact-channel" href="https://www.linkedin.com/in/shaan-raza-/" target="_blank" rel="noopener">
+              <span class="contact-channel-key">in</span> linkedin.com/in/shaan-raza-
+            </a>
+            <a class="contact-channel" href="mailto:shaanraza0007@gmail.com">
+              <span class="contact-channel-key">@</span> shaanraza0007@gmail.com
+            </a>
+          </div>
+        </div>
+        <div class="contact-action">
+          <button class="btn-primary btn-large" id="bookCTABtn2" onclick="openBookingModal()">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" /></svg>
+            Book a 1-hour interview
+          </button>
+          <div class="contact-meta">30 min · Google Meet · IST</div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        <div class="footer-left">
+          <span class="footer-logo">SR</span>
+          <span class="footer-text">shaan<span class="accent-blue">.</span>built_with_ai</span>
+        </div>
+        <div class="footer-right">
+          <span class="footer-meta">v2.0 · 2026</span>
+        </div>
+      </div>
+    </footer>
+
+  </main>
+
+  <!-- ══════════════════════════════════════════════
+       BOOKING MODAL
+       ══════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="bookingModal" role="dialog" aria-modal="true" aria-labelledby="bookingModalTitle">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title" id="bookingModalTitle">📅 Book an Interview</div>
+          <div class="modal-subtitle">Schedule a 1-hour Google Meet session with Shaan</div>
+        </div>
+        <button class="modal-close" onclick="closeModal('bookingModal')" aria-label="Close">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div id="bookingSuccess" class="form-success" style="display:none">
+          ✅ Interview booked! You'll receive a confirmation shortly.
+        </div>
+
+        <form id="bookingForm" novalidate>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="bookName">Your Name <span>*</span></label>
+              <input class="form-input" type="text" id="bookName" placeholder="Jane Smith" required autocomplete="name" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="bookPhone">Phone (optional)</label>
+              <input class="form-input" type="tel" id="bookPhone" placeholder="+1 555 000 0000" autocomplete="tel" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="bookEmail">Email <span>*</span></label>
+            <input class="form-input" type="email" id="bookEmail" placeholder="jane@company.com" required autocomplete="email" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Select a Time Slot <span>*</span></label>
+            <div class="slot-picker" id="slotPicker">
+              <div class="no-slots-msg skeleton" style="height:60px"></div>
+            </div>
+            <input type="hidden" id="selectedDate" />
+            <input type="hidden" id="selectedTime" />
+            <div class="form-error" id="slotError" style="display:none">Please select a time slot.</div>
+          </div>
+
+          <div class="form-error" id="bookingError" style="display:none"></div>
+        </form>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeModal('bookingModal')">Cancel</button>
+        <button class="btn-primary" id="confirmBookBtn" onclick="confirmBooking()">Confirm Booking</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       ADMIN PANEL MODAL
+       ══════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="adminModal" role="dialog" aria-modal="true" aria-labelledby="adminModalTitle">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title" id="adminModalTitle">⚙️ Configuration</div>
+          <div class="modal-subtitle">Configure AI model and knowledge base</div>
+        </div>
+        <button class="modal-close" onclick="closeModal('adminModal')" aria-label="Close">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="admin-panel-content">
+          <div>
+            <div class="section-label">System Status</div>
+            <div id="adminStatusRows"></div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="geminiKeyInput">
+              NVIDIA API Key
+              <span class="form-hint-inline">(get at <a href="https://build.nvidia.com" target="_blank">build.nvidia.com</a>)</span>
+            </label>
+            <input class="form-input" type="password" id="geminiKeyInput" placeholder="nvapi-…" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="calendarIdInput">
+              Google Calendar ID
+              <span class="form-hint-inline">(e.g., your gmail address)</span>
+            </label>
+            <input class="form-input" type="text" id="calendarIdInput" placeholder="yourname@gmail.com" />
+            <div class="form-hint">
+              ⚠️ <strong>Required:</strong> Share your Google Calendar with this Service Account email to allow sync and booking:
+              <code>voice-agent-scheduler@voice-agent-498508.iam.gserviceaccount.com</code>
+              with "Make changes to events" permission.
+            </div>
+          </div>
+
+          <div class="modal-actions" style="margin-top: 8px;">
+            <button class="btn-secondary" onclick="reloadRAG()">🔄 Reload Knowledge Base</button>
+            <button class="btn-primary" onclick="saveConfig()">Save &amp; Apply</button>
+          </div>
+
+          <div id="ragStatsSection">
+            <div class="section-label" style="margin-top:8px">Knowledge Base</div>
+            <div id="ragStatsRows"></div>
+          </div>
+
+          <div id="adminBookingsSection">
+            <div class="section-label" style="margin-top:16px">Booked Appointments</div>
+            <div id="adminBookingsRows" class="admin-bookings-list">
+              <div class="no-slots-msg">No bookings loaded yet.</div>
+            </div>
+            <button class="btn-danger" onclick="resetAllBookings()">⚠️ Reset All Bookings</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       EVALUATION MODAL
+       ══════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="evalModal" role="dialog" aria-modal="true" aria-labelledby="evalModalTitle">
+    <div class="modal" style="max-width:560px">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title" id="evalModalTitle">📊 Evaluation Report</div>
+          <div class="modal-subtitle">Production-readiness scoring across 8 dimensions</div>
+        </div>
+        <button class="modal-close" onclick="closeModal('evalModal')" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body">
+        <div id="evalContent">
+          <div class="no-slots-msg">Run <code>python evaluator.py</code> to generate a report.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden badge that some JS may toggle -->
+  <div id="sidebarCounterBadge" class="sidebar-counter-badge" style="display:none"></div>
+  <div id="typingIndicator" style="display:none"></div>
+
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <script>
+    /* ═══════════════════════════════════════════════════════════
+       App.js — Dynamic data loader, interactions, animations
+       ═══════════════════════════════════════════════════════════ */
+    (() => {
+      const API_BASE = (window.API_BASE_URL && window.API_BASE_URL !== "API_URL_PLACEHOLDER")
+        ? window.API_BASE_URL
+        : "https://web-production-11aa7.up.railway.app";
+
+      /* ── Helpers ── */
+      const $  = (sel, root = document) => root.querySelector(sel);
+      const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+      const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+      /* ── Nav background on scroll ── */
+      const nav = document.getElementById('nav');
+      const onScroll = () => {
+        if (!nav) return;
+        if (window.scrollY > 8) {
+          nav.style.background = 'rgba(7, 8, 12, 0.85)';
+          nav.style.borderBottomColor = 'rgba(255,255,255,0.12)';
+        } else {
+          nav.style.background = 'rgba(7, 8, 12, 0.6)';
+          nav.style.borderBottomColor = 'rgba(255,255,255,0.08)';
+        }
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+
+      /* ── Scroll-reveal ── */
+      const revealTargets = $$('.section, .hero, .stat-card, .work-card, .project-pill, .terminal, .contact-card');
+      revealTargets.forEach((el, i) => {
+        el.classList.add('reveal');
+        el.style.transitionDelay = `${Math.min(i * 30, 200)}ms`;
+      });
+      const revealIO = new IntersectionObserver((entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add('in-view');
+            revealIO.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+      revealTargets.forEach((el) => revealIO.observe(el));
+
+      /* ── Live IST clock (terminal meta) ── */
+      const clockEl = document.getElementById('terminalMeta');
+      const updateClock = () => {
+        if (!clockEl) return;
+        try {
+          const now = new Date();
+          const fmt = new Intl.DateTimeFormat('en-GB', {
+            timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
+          });
+          clockEl.textContent = fmt.format(now) + ' IST';
+        } catch {
+          clockEl.textContent = new Date().toLocaleTimeString() + ' IST';
+        }
+      };
+      updateClock();
+      setInterval(updateClock, 1000);
+
+      /* ── Counter animation ── */
+      const animateCounter = (el, target, suffix) => {
+        if (el.dataset.animated === '1') return;
+        el.dataset.animated = '1';
+        const duration = 1100;
+        const start = performance.now();
+        const isFloat = String(target).includes('.');
+        const numericTarget = parseFloat(target);
+        const step = (now) => {
+          const t = Math.min((now - start) / duration, 1);
+          const eased = 1 - Math.pow(1 - t, 3);
+          const current = numericTarget * eased;
+          const display = isFloat ? current.toFixed(1) : Math.floor(current);
+          el.innerHTML = display + (suffix ? `<span class="stat-suffix">${esc(suffix)}</span>` : '');
+          if (t < 1) requestAnimationFrame(step);
+          else el.innerHTML = (isFloat ? numericTarget.toFixed(1) : numericTarget) + (suffix ? `<span class="stat-suffix">${esc(suffix)}</span>` : '');
+        };
+        requestAnimationFrame(step);
+      };
+      const counterIO = new IntersectionObserver((entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            const card = e.target;
+            const valueEl = card.querySelector('.stat-value');
+            const target = card.dataset.numericValue;
+            const suffix = card.dataset.suffix || '';
+            if (valueEl && target) animateCounter(valueEl, target, suffix);
+            counterIO.unobserve(card);
+          }
+        });
+      }, { threshold: 0.4 });
+      $$('.stat-card').forEach((c) => counterIO.observe(c));
+
+      /* ── Fetch /api/stats and re-render ── */
+      const ICONS = {
+        education: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5" /></svg>',
+        database:  '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" /></svg>',
+        trophy:    '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 0 1 3 3h-15a3 3 0 0 1 3-3m9 0v-4.5A3.375 3.375 0 0 0 19.125 10.875 3.375 3.375 0 0 0 16.5 7.5h0m-9 11.25V18a3 3 0 0 0-3 3h15a3 3 0 0 0-3-3v0m-9-4.5h9m-9 0a3 3 0 0 1-3-3V7.5a3 3 0 0 1 3-3h9a3 3 0 0 1 3 3v3.75a3 3 0 0 1-3 3Z" /></svg>',
+        code:      '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5" /></svg>',
+      };
+
+      const renderStats = (stats) => {
+        const cards = $$('.stat-card');
+        stats.forEach((stat, i) => {
+          const card = cards[i];
+          if (!card) return;
+          card.dataset.topic = stat.topic;
+          card.dataset.key   = stat.key;
+          card.dataset.numericValue = stat.value;
+          card.dataset.suffix = stat.suffix || '';
+          card.setAttribute('role', 'button');
+          card.setAttribute('tabindex', '0');
+          const iconEl  = card.querySelector('.stat-icon');
+          const labelEl = card.querySelector('.stat-label');
+          const subEl   = card.querySelector('.stat-sub');
+          if (iconEl && ICONS[stat.icon]) iconEl.innerHTML = ICONS[stat.icon];
+          if (labelEl) labelEl.textContent = stat.label;
+          if (subEl)   subEl.textContent   = stat.sub;
+          // Reset value (will animate when in view)
+          const valueEl = card.querySelector('.stat-value');
+          if (valueEl) {
+            valueEl.dataset.animated = '0';
+            valueEl.innerHTML = '0' + (stat.suffix ? `<span class="stat-suffix">${esc(stat.suffix)}</span>` : '');
+          }
+        });
+        // Wire click → ask AI
+        cards.forEach((card) => {
+          if (card.dataset.wired === '1') return;
+          card.dataset.wired = '1';
+          const handler = () => {
+            const topic = card.dataset.topic;
+            if (!topic || !window.sendSuggestedQuestion) return;
+            window.sendSuggestedQuestion(`Tell me about your ${topic}.`);
+            document.getElementById('chat-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          };
+          card.addEventListener('click', handler);
+          card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handler(); } });
+        });
+      };
+
+      const renderTicker = (items) => {
+        const track = $('.ticker-track');
+        if (!track || !Array.isArray(items) || items.length === 0) return;
+        const html = (arr) => arr.map((s) => `<div class="ticker-item" data-skill="${esc(s)}" role="button" tabindex="0"><span class="ticker-dot"></span>${esc(s)}</div>`).join('');
+        track.innerHTML = html(items) + html(items);
+        track.querySelectorAll('.ticker-item').forEach((el) => {
+          const handler = () => {
+            const skill = el.dataset.skill;
+            const input = document.getElementById('chatInput');
+            if (input) {
+              input.value = `Tell me about your experience with ${skill}.`;
+              input.focus();
+              document.getElementById('chat-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+          };
+          el.addEventListener('click', handler);
+          el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handler(); } });
+        });
+      };
+
+      const renderTerminal = (term) => {
+        const body  = $('.terminal-body');
+        const title = $('.terminal-title');
+        if (!body || !term) return;
+        if (title && term.title) title.textContent = term.title;
+        body.innerHTML = (term.lines || []).map((line) => {
+          if (line.type === 'cmd') {
+            return `<div class="terminal-line" data-cmd="${esc(line.text)}"><span class="terminal-prompt">$</span> <span class="terminal-cmd">${esc(line.text)}</span></div>`;
+          }
+          return `<div class="terminal-line terminal-output">${esc(line.text)}</div>`;
+        }).join('');
+        // Click any cmd line → ask AI
+        body.querySelectorAll('.terminal-line[data-cmd]').forEach((el) => {
+          el.style.cursor = 'pointer';
+          el.addEventListener('click', () => {
+            const cmd = el.dataset.cmd;
+            const input = document.getElementById('chatInput');
+            if (input) {
+              input.value = `Explain: ${cmd}`;
+              input.focus();
+              document.getElementById('chat-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+          });
+        });
+      };
+
+      const loadStats = async () => {
+        try {
+          const res = await fetch(API_BASE + '/api/stats', { cache: 'no-store' });
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          const data = await res.json();
+          if (data.stats)   renderStats(data.stats);
+          if (data.ticker)  renderTicker(data.ticker);
+          if (data.terminal) renderTerminal(data.terminal);
+        } catch (e) {
+          console.warn('[portfolio] /api/stats failed, keeping static defaults:', e.message);
+        }
+      };
+      loadStats();
+      // Refresh every 60s so the clock & stats stay current
+      setInterval(loadStats, 60000);
+
+      /* ── "Available for hire" pill → open booking ── */
+      const availPill = document.querySelector('.status-pill');
+      if (availPill) {
+        availPill.style.cursor = 'pointer';
+        availPill.setAttribute('role', 'button');
+        availPill.setAttribute('tabindex', '0');
+        const handler = () => window.openBookingModal && window.openBookingModal();
+        availPill.addEventListener('click', handler);
+        availPill.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); handler(); } });
+      }
+
+      /* ── Terminal title → open booking (subtle CTA) ── */
+      const termTitle = document.querySelector('.terminal-title');
+      if (termTitle) {
+        termTitle.style.cursor = 'pointer';
+        termTitle.title = 'Book a 1-hour interview';
+        termTitle.addEventListener('click', () => window.openBookingModal && window.openBookingModal());
+      }
+    })();
+  </script>
+  <script src="chat.js"></script>
+</body>
+</html>
