@@ -125,12 +125,21 @@ Skills Demonstrated: Structured problem-solving, market analysis, financial mode
 }
 
 
-def fetch_repo_data(username: str, repo_name: str) -> dict:
-    """Fetch repository metadata from GitHub API."""
+def get_github_headers() -> dict:
+    """Helper to construct headers, including optional GITHUB_TOKEN authorization."""
     headers = {
         "Accept": "application/vnd.github.v3+json",
         "User-Agent": "Shaan-AI-Chatbot"
     }
+    token = os.environ.get("GITHUB_TOKEN")
+    if token:
+        headers["Authorization"] = f"token {token}"
+    return headers
+
+
+def fetch_repo_data(username: str, repo_name: str) -> dict:
+    """Fetch repository metadata from GitHub API."""
+    headers = get_github_headers()
 
     repo_data = {
         "name": repo_name,
@@ -143,7 +152,8 @@ def fetch_repo_data(username: str, repo_name: str) -> dict:
         "stars": 0,
         "forks": 0,
         "url": f"https://github.com/{username}/{repo_name}",
-        "fetched_from_api": False
+        "fetched_from_api": False,
+        "commits": []
     }
 
     try:
@@ -196,6 +206,34 @@ def fetch_repo_data(username: str, repo_name: str) -> dict:
         if topics_resp.status_code == 200:
             repo_data["topics"] = topics_resp.json().get("names", [])
 
+        time.sleep(0.5)
+
+        # Fetch commits
+        commits_resp = requests.get(
+            f"https://api.github.com/repos/{username}/{repo_name}/commits?per_page=5",
+            headers=headers,
+            timeout=10
+        )
+        if commits_resp.status_code == 200:
+            commits = []
+            for item in commits_resp.json():
+                sha = item.get("sha", "")[:7]
+                commit_info = item.get("commit", {})
+                author_info = commit_info.get("author", {})
+                author = author_info.get("name", "Unknown")
+                date = author_info.get("date", "Unknown")
+                message = commit_info.get("message", "No message").split('\n')[0].strip()
+                commits.append({
+                    "sha": sha,
+                    "author": author,
+                    "date": date,
+                    "message": message
+                })
+            repo_data["commits"] = commits
+            print(f"  ✓ Fetched {len(commits)} commits for {repo_name}")
+        else:
+            print(f"  ✗ Failed to fetch commits for {repo_name}: {commits_resp.status_code}")
+
     except Exception as e:
         print(f"  ✗ Error fetching {repo_name}: {e}")
 
@@ -228,7 +266,7 @@ def fetch_all_repos(username: str, known_repos: list) -> list:
     try:
         resp = requests.get(
             f"https://api.github.com/users/{username}/repos?per_page=50&sort=updated",
-            headers={"Accept": "application/vnd.github.v3+json", "User-Agent": "Shaan-AI-Chatbot"},
+            headers=get_github_headers(),
             timeout=10
         )
         if resp.status_code == 200:
@@ -264,6 +302,12 @@ def build_rag_content(repo: dict) -> str:
     elif repo.get("readme"):
         # Use first 2000 chars of README
         parts.append(f"\nREADME:\n{repo['readme'][:2000]}")
+
+    commits = repo.get("commits", [])
+    if commits:
+        parts.append("\nRecent Commits:")
+        for c in commits:
+            parts.append(f"- Commit {c['sha']} by {c['author']} on {c['date']}: {c['message']}")
 
     return "\n".join(parts)
 

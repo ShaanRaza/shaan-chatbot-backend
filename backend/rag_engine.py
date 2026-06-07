@@ -199,6 +199,9 @@ Shaan's combination of technical depth (ML, SQL, Python automation) with busines
             print("[RAG] Fetching latest GitHub repos dynamically...")
             from github_fetcher import fetch_all_repos, GITHUB_USERNAME, KNOWN_REPOS, build_rag_content
             repos = fetch_all_repos(GITHUB_USERNAME, list(KNOWN_REPOS))
+            # Prevent overwriting a good local cache with degraded fallback data if API is rate-limited
+            if os.path.exists(GITHUB_FILE) and not any(r.get("fetched_from_api") for r in repos):
+                raise RuntimeError("All GitHub API requests returned rate-limit (403) or failed. Preserving local cache.")
             for repo in repos:
                 repo["rag_content"] = build_rag_content(repo)
             os.makedirs("knowledge", exist_ok=True)

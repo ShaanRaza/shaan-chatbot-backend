@@ -17,7 +17,39 @@
     "forks": 0,
     "url": "https://github.com/ShaanRaza/Zomato_Dataset_Analysis",
     "fetched_from_api": true,
-    "rag_content": "GitHub Repository: Zomato_Dataset_Analysis\nURL: https://github.com/ShaanRaza/Zomato_Dataset_Analysis\nDescription: Zomato Data Exploration and Analysis with SQL (SQL SERVER)\nPrimary Language: Python\nTopics: sql, pandas, data-analysis, restaurant, market-analysis\n\nDetailed Information:\nProject: Zomato Dataset Analysis\nTechnologies: SQL Server, Pandas, Python\nPurpose: Built a restaurant market analysis model to identify high-demand, low-supply cities and localities for expansion opportunities.\nKey Techniques: Window functions, CTEs, and joins to rank localities by restaurant density vs customer demand.\nProblem Solved: Helped identify underserved markets in the Zomato dataset where new restaurant openings would have the highest ROI.\nOutcome: Produced actionable market intelligence from raw restaurant transaction data.\nLessons Learned: Deep understanding of SQL analytical functions; how to translate business questions into structured query patterns.\nArchitecture: Data ingestion via Pandas \u2192 SQL Server for analytical queries \u2192 results exported for visualization.\n"
+    "commits": [
+      {
+        "sha": "5ab9b2f",
+        "author": "Shaan Raza",
+        "date": "2026-04-07T05:20:43Z",
+        "message": "Rename ZOMATO_DATA_ANALYSIS.sql to Zomato_Data_Analysis.sql"
+      },
+      {
+        "sha": "9f60cd3",
+        "author": "Shaan Raza",
+        "date": "2026-04-07T05:19:54Z",
+        "message": "Create Zomato_Data_Analysis.pandas"
+      },
+      {
+        "sha": "f3b23c9",
+        "author": "Shaan Raza",
+        "date": "2026-04-07T05:18:59Z",
+        "message": "Rename Zomto_Data_Exploration.pandas to Zomato_Data_Exploration.pandas"
+      },
+      {
+        "sha": "1ac7a92",
+        "author": "Shaan Raza",
+        "date": "2026-04-07T05:18:35Z",
+        "message": "Rename Zomto_Data_Exploration.sql to Zomato_Data_Exploration.sql"
+      },
+      {
+        "sha": "d740c34",
+        "author": "Shaan Raza",
+        "date": "2026-04-07T05:18:12Z",
+        "message": "Rename ZOMATO_DATA_EXPLORATION.sql to  Zomato_Data_Exploration.sql"
+      }
+    ],
+    "rag_content": "GitHub Repository: Zomato_Dataset_Analysis\nURL: https://github.com/ShaanRaza/Zomato_Dataset_Analysis\nDescription: Zomato Data Exploration and Analysis with SQL (SQL SERVER)\nPrimary Language: Python\nTopics: sql, pandas, data-analysis, restaurant, market-analysis\n\nDetailed Information:\nProject: Zomato Dataset Analysis\nTechnologies: SQL Server, Pandas, Python\nPurpose: Built a restaurant market analysis model to identify high-demand, low-supply cities and localities for expansion opportunities.\nKey Techniques: Window functions, CTEs, and joins to rank localities by restaurant density vs customer demand.\nProblem Solved: Helped identify underserved markets in the Zomato dataset where new restaurant openings would have the highest ROI.\nOutcome: Produced actionable market intelligence from raw restaurant transaction data.\nLessons Learned: Deep understanding of SQL analytical functions; how to translate business questions into structured query patterns.\nArchitecture: Data ingestion via Pandas \u2192 SQL Server for analytical queries \u2192 results exported for visualization.\n\n\nRecent Commits:\n- Commit 5ab9b2f by Shaan Raza on 2026-04-07T05:20:43Z: Rename ZOMATO_DATA_ANALYSIS.sql to Zomato_Data_Analysis.sql\n- Commit 9f60cd3 by Shaan Raza on 2026-04-07T05:19:54Z: Create Zomato_Data_Analysis.pandas\n- Commit f3b23c9 by Shaan Raza on 2026-04-07T05:18:59Z: Rename Zomto_Data_Exploration.pandas to Zomato_Data_Exploration.pandas\n- Commit 1ac7a92 by Shaan Raza on 2026-04-07T05:18:35Z: Rename Zomto_Data_Exploration.sql to Zomato_Data_Exploration.sql\n- Commit d740c34 by Shaan Raza on 2026-04-07T05:18:12Z: Rename ZOMATO_DATA_EXPLORATION.sql to  Zomato_Data_Exploration.sql"
   },
   {
     "name": "Automation-Code-for-RTDMS",
@@ -38,7 +70,39 @@
     "forks": 0,
     "url": "https://github.com/ShaanRaza/Automation-Code-for-RTDMS",
     "fetched_from_api": true,
-    "rag_content": "GitHub Repository: Automation-Code-for-RTDMS\nURL: https://github.com/ShaanRaza/Automation-Code-for-RTDMS\nDescription: Automated web scraping of India's RTDMS portal using Selenium and BeautifulSoup to extract state- and category-wise data into Excel files.\nPrimary Language: Python\nTopics: selenium, web-scraping, automation, python, beautifulsoup, environment\n\nDetailed Information:\nProject: Automation Code for RTDMS\nTechnologies: Python, Selenium, BeautifulSoup, Excel (openpyxl)\nPurpose: Automate extraction of environmental monitoring data from India's RTDMS portal which has dynamically loaded content.\nProblem Solved: The RTDMS portal uses JavaScript-rendered tables that cannot be scraped by simple HTTP requests. Selenium was used to control a headless browser to wait for dynamic content, and BeautifulSoup to parse the rendered HTML.\nArchitecture: Selenium WebDriver (headless Chrome) \u2192 Dynamic page wait \u2192 BeautifulSoup HTML parser \u2192 Pandas DataFrame \u2192 Excel output\nKey Challenges: Handling dynamic content loading, site-specific wait conditions, and anti-scraping measures.\nOutcome: Extracted state- and category-wise environmental data into structured Excel files, reducing manual effort from hours to minutes.\nFuture Improvements: Add scheduling via cron, cloud deployment, and automated email delivery of reports.\nLessons Learned: Proficiency in Selenium for dynamic pages, handling race conditions with waits, and reliable HTML parsing strategies.\n"
+    "commits": [
+      {
+        "sha": "1d4c401",
+        "author": "Shaan Raza",
+        "date": "2025-08-20T10:18:58Z",
+        "message": "Create rtdms_scraper.py"
+      },
+      {
+        "sha": "c5195d7",
+        "author": "ShaanRaza",
+        "date": "2025-08-20T10:13:33Z",
+        "message": "Update README.md"
+      },
+      {
+        "sha": "c08e076",
+        "author": "ShaanRaza",
+        "date": "2025-08-20T10:07:48Z",
+        "message": "Update README.md"
+      },
+      {
+        "sha": "28dfaef",
+        "author": "ShaanRaza",
+        "date": "2025-08-19T09:14:59Z",
+        "message": "Update README.md"
+      },
+      {
+        "sha": "7fb9d13",
+        "author": "ShaanRaza",
+        "date": "2025-08-19T09:11:31Z",
+        "message": "Initial commit"
+      }
+    ],
+    "rag_content": "GitHub Repository: Automation-Code-for-RTDMS\nURL: https://github.com/ShaanRaza/Automation-Code-for-RTDMS\nDescription: Automated web scraping of India's RTDMS portal using Selenium and BeautifulSoup to extract state- and category-wise data into Excel files.\nPrimary Language: Python\nTopics: selenium, web-scraping, automation, python, beautifulsoup, environment\n\nDetailed Information:\nProject: Automation Code for RTDMS\nTechnologies: Python, Selenium, BeautifulSoup, Excel (openpyxl)\nPurpose: Automate extraction of environmental monitoring data from India's RTDMS portal which has dynamically loaded content.\nProblem Solved: The RTDMS portal uses JavaScript-rendered tables that cannot be scraped by simple HTTP requests. Selenium was used to control a headless browser to wait for dynamic content, and BeautifulSoup to parse the rendered HTML.\nArchitecture: Selenium WebDriver (headless Chrome) \u2192 Dynamic page wait \u2192 BeautifulSoup HTML parser \u2192 Pandas DataFrame \u2192 Excel output\nKey Challenges: Handling dynamic content loading, site-specific wait conditions, and anti-scraping measures.\nOutcome: Extracted state- and category-wise environmental data into structured Excel files, reducing manual effort from hours to minutes.\nFuture Improvements: Add scheduling via cron, cloud deployment, and automated email delivery of reports.\nLessons Learned: Proficiency in Selenium for dynamic pages, handling race conditions with waits, and reliable HTML parsing strategies.\n\n\nRecent Commits:\n- Commit 1d4c401 by Shaan Raza on 2025-08-20T10:18:58Z: Create rtdms_scraper.py\n- Commit c5195d7 by ShaanRaza on 2025-08-20T10:13:33Z: Update README.md\n- Commit c08e076 by ShaanRaza on 2025-08-20T10:07:48Z: Update README.md\n- Commit 28dfaef by ShaanRaza on 2025-08-19T09:14:59Z: Update README.md\n- Commit 7fb9d13 by ShaanRaza on 2025-08-19T09:11:31Z: Initial commit"
   },
   {
     "name": "EPD-Models-openLCA",
@@ -59,13 +123,45 @@
     "forks": 0,
     "url": "https://github.com/ShaanRaza/EPD-Models-openLCA",
     "fetched_from_api": true,
-    "rag_content": "GitHub Repository: EPD-Models-openLCA\nURL: https://github.com/ShaanRaza/EPD-Models-openLCA\nDescription: Created openLCA models using EXIOBASE and Ecoinvent to generate Environmental Product Declarations (EPDs) for clients like MSSL Group and Raymond.\nPrimary Language: Python\nTopics: lca, sustainability, openLCA, carbon, EPD, environment\n\nDetailed Information:\nProject: EPD Models using openLCA\nTechnologies: openLCA, EXIOBASE, Ecoinvent, ISO 14025, EN 15804\nPurpose: Created Life Cycle Assessment (LCA) models to generate ISO 14025 and EN 15804 compliant Environmental Product Declarations (EPDs) for major industrial clients.\nClients: MSSL Group (Motherson Sumi Systems) and Raymond (textile conglomerate)\nProblem Solved: Companies needed certified EPDs to comply with environmental disclosure requirements and reduce supply chain carbon footprint reporting burden.\nArchitecture: Data collection \u2192 openLCA model setup \u2192 EXIOBASE/Ecoinvent database linking \u2192 Impact assessment \u2192 EPD report generation\nKey Techniques: Scope 1, 2, and 3 emissions modeling, system boundary definition, cut-off criteria application per ISO standards.\nOutcome: Delivered compliant EPD documentation for two major enterprise clients, supporting their sustainability reporting obligations.\nLessons Learned: Deep understanding of LCA methodology, GHG accounting standards, and how to translate complex supply chain data into standardized environmental reports.\n"
+    "commits": [
+      {
+        "sha": "18beff7",
+        "author": "Shaan Raza",
+        "date": "2025-08-20T13:10:03Z",
+        "message": "Add files via upload"
+      },
+      {
+        "sha": "daf85a7",
+        "author": "Shaan Raza",
+        "date": "2025-08-20T10:32:12Z",
+        "message": "Add files via upload"
+      },
+      {
+        "sha": "b5ed8f5",
+        "author": "Shaan Raza",
+        "date": "2025-08-20T10:26:28Z",
+        "message": "Update README.md"
+      },
+      {
+        "sha": "fc774da",
+        "author": "Shaan Raza",
+        "date": "2025-08-20T10:25:15Z",
+        "message": "Update README.md"
+      },
+      {
+        "sha": "102f2eb",
+        "author": "Shaan Raza",
+        "date": "2025-08-20T10:24:33Z",
+        "message": "Initial commit"
+      }
+    ],
+    "rag_content": "GitHub Repository: EPD-Models-openLCA\nURL: https://github.com/ShaanRaza/EPD-Models-openLCA\nDescription: Created openLCA models using EXIOBASE and Ecoinvent to generate Environmental Product Declarations (EPDs) for clients like MSSL Group and Raymond.\nPrimary Language: Python\nTopics: lca, sustainability, openLCA, carbon, EPD, environment\n\nDetailed Information:\nProject: EPD Models using openLCA\nTechnologies: openLCA, EXIOBASE, Ecoinvent, ISO 14025, EN 15804\nPurpose: Created Life Cycle Assessment (LCA) models to generate ISO 14025 and EN 15804 compliant Environmental Product Declarations (EPDs) for major industrial clients.\nClients: MSSL Group (Motherson Sumi Systems) and Raymond (textile conglomerate)\nProblem Solved: Companies needed certified EPDs to comply with environmental disclosure requirements and reduce supply chain carbon footprint reporting burden.\nArchitecture: Data collection \u2192 openLCA model setup \u2192 EXIOBASE/Ecoinvent database linking \u2192 Impact assessment \u2192 EPD report generation\nKey Techniques: Scope 1, 2, and 3 emissions modeling, system boundary definition, cut-off criteria application per ISO standards.\nOutcome: Delivered compliant EPD documentation for two major enterprise clients, supporting their sustainability reporting obligations.\nLessons Learned: Deep understanding of LCA methodology, GHG accounting standards, and how to translate complex supply chain data into standardized environmental reports.\n\n\nRecent Commits:\n- Commit 18beff7 by Shaan Raza on 2025-08-20T13:10:03Z: Add files via upload\n- Commit daf85a7 by Shaan Raza on 2025-08-20T10:32:12Z: Add files via upload\n- Commit b5ed8f5 by Shaan Raza on 2025-08-20T10:26:28Z: Update README.md\n- Commit fc774da by Shaan Raza on 2025-08-20T10:25:15Z: Update README.md\n- Commit 102f2eb by Shaan Raza on 2025-08-20T10:24:33Z: Initial commit"
   },
   {
     "name": "PowerBI-Dashboards",
     "full_name": "ShaanRaza/PowerBI-Dashboards",
-    "description": "Interactive Power BI dashboards for business analytics across multiple domains.",
-    "readme": "",
+    "description": "A collection of interactive Power BI dashboards showcasing data analysis and visualization across multiple domains.",
+    "readme": "# PowerBI-Dashboards\nA collection of interactive Power BI dashboards showcasing data analysis and visualization across multiple domains.\n",
     "readme_summary": "Project: PowerBI Dashboards Collection\nTechnologies: Power BI, DAX, SQL, Excel\nPurpose: A portfolio of interactive Power BI dashboards demonstrating data analysis and visualization capabilities across multiple business domains.\nKey Dashboards:\n- Scope 1-3 GHG Emissions Tracking Dashboard: Monitors carbon emissions across organizational boundaries with drill-down by category\n- Sales & Revenue Analytics Dashboard: KPI tracking with trend analysis and forecasting\n- Customer Segmentation Dashboard: RFM-based segmentation with DAX calculations\n- Operational KPI Dashboard: AHT, SLA, CSAT, and FRT monitoring for contact center operations\nKey Features: DAX measures, calculated columns, drill-through pages, dynamic filtering, cost per ton of CO2 metrics\nCertification: Shaan holds the PL-300 (Power BI Data Analyst) certification from Microsoft.\nOutcome: Demonstrated ability to translate complex datasets into actionable executive-level dashboards.\nLessons Learned: Advanced DAX pattern design, data model optimization, and UX best practices for business intelligence tools.\n",
     "language": "DAX",
     "topics": [
@@ -78,8 +174,22 @@
     "stars": 0,
     "forks": 0,
     "url": "https://github.com/ShaanRaza/PowerBI-Dashboards",
-    "fetched_from_api": false,
-    "rag_content": "GitHub Repository: PowerBI-Dashboards\nURL: https://github.com/ShaanRaza/PowerBI-Dashboards\nDescription: Interactive Power BI dashboards for business analytics across multiple domains.\nPrimary Language: DAX\nTopics: power-bi, dax, data-visualization, business-intelligence, analytics\n\nDetailed Information:\nProject: PowerBI Dashboards Collection\nTechnologies: Power BI, DAX, SQL, Excel\nPurpose: A portfolio of interactive Power BI dashboards demonstrating data analysis and visualization capabilities across multiple business domains.\nKey Dashboards:\n- Scope 1-3 GHG Emissions Tracking Dashboard: Monitors carbon emissions across organizational boundaries with drill-down by category\n- Sales & Revenue Analytics Dashboard: KPI tracking with trend analysis and forecasting\n- Customer Segmentation Dashboard: RFM-based segmentation with DAX calculations\n- Operational KPI Dashboard: AHT, SLA, CSAT, and FRT monitoring for contact center operations\nKey Features: DAX measures, calculated columns, drill-through pages, dynamic filtering, cost per ton of CO2 metrics\nCertification: Shaan holds the PL-300 (Power BI Data Analyst) certification from Microsoft.\nOutcome: Demonstrated ability to translate complex datasets into actionable executive-level dashboards.\nLessons Learned: Advanced DAX pattern design, data model optimization, and UX best practices for business intelligence tools.\n"
+    "fetched_from_api": true,
+    "commits": [
+      {
+        "sha": "bf69a59",
+        "author": "Shaan Raza",
+        "date": "2025-08-20T13:01:40Z",
+        "message": "Add files via upload"
+      },
+      {
+        "sha": "f13aa21",
+        "author": "Shaan Raza",
+        "date": "2025-08-20T10:39:53Z",
+        "message": "Initial commit"
+      }
+    ],
+    "rag_content": "GitHub Repository: PowerBI-Dashboards\nURL: https://github.com/ShaanRaza/PowerBI-Dashboards\nDescription: A collection of interactive Power BI dashboards showcasing data analysis and visualization across multiple domains.\nPrimary Language: DAX\nTopics: power-bi, dax, data-visualization, business-intelligence, analytics\n\nDetailed Information:\nProject: PowerBI Dashboards Collection\nTechnologies: Power BI, DAX, SQL, Excel\nPurpose: A portfolio of interactive Power BI dashboards demonstrating data analysis and visualization capabilities across multiple business domains.\nKey Dashboards:\n- Scope 1-3 GHG Emissions Tracking Dashboard: Monitors carbon emissions across organizational boundaries with drill-down by category\n- Sales & Revenue Analytics Dashboard: KPI tracking with trend analysis and forecasting\n- Customer Segmentation Dashboard: RFM-based segmentation with DAX calculations\n- Operational KPI Dashboard: AHT, SLA, CSAT, and FRT monitoring for contact center operations\nKey Features: DAX measures, calculated columns, drill-through pages, dynamic filtering, cost per ton of CO2 metrics\nCertification: Shaan holds the PL-300 (Power BI Data Analyst) certification from Microsoft.\nOutcome: Demonstrated ability to translate complex datasets into actionable executive-level dashboards.\nLessons Learned: Advanced DAX pattern design, data model optimization, and UX best practices for business intelligence tools.\n\n\nRecent Commits:\n- Commit bf69a59 by Shaan Raza on 2025-08-20T13:01:40Z: Add files via upload\n- Commit f13aa21 by Shaan Raza on 2025-08-20T10:39:53Z: Initial commit"
   },
   {
     "name": "FMCG-Customer-Churn-Prediction",
@@ -100,12 +210,13 @@
     "forks": 0,
     "url": "https://github.com/ShaanRaza/FMCG-Customer-Churn-Prediction",
     "fetched_from_api": false,
+    "commits": [],
     "rag_content": "GitHub Repository: FMCG-Customer-Churn-Prediction\nURL: https://github.com/ShaanRaza/FMCG-Customer-Churn-Prediction\nDescription: ML pipeline for customer churn prediction using RFM analysis, Scikit-Learn, and XGBoost.\nPrimary Language: Python\nTopics: machine-learning, churn-prediction, xgboost, scikit-learn, rfm, python\n\nDetailed Information:\nProject: FMCG Customer Churn Prediction\nTechnologies: Python, NumPy, Pandas, Scikit-Learn, XGBoost, K-Means\nDataset: 10,000+ transaction records from an FMCG (Fast-Moving Consumer Goods) company\nPurpose: Predict which customers are likely to churn so the business can intervene with targeted retention strategies.\nMethodology:\n1. RFM Analysis (Recency, Frequency, Monetary): Engineered customer behavior features\n2. Data Preprocessing: Handling missing values, feature scaling, encoding\n3. Classification Models: Logistic Regression, Random Forest, XGBoost\n4. Customer Segmentation: K-Means clustering to group customers by churn risk and behavior\nPerformance Metrics: ROC-AUC: 0.92+, F1-Score: 0.85+ (XGBoost model)\nKey Insight: High-recency, low-frequency customers showed 3x higher churn probability than engaged regulars.\nArchitecture: Data Ingestion \u2192 EDA \u2192 Feature Engineering (RFM) \u2192 Model Training \u2192 Evaluation \u2192 Segmentation\nLessons Learned: Practical application of ML pipeline from raw data to business insights; importance of feature engineering over model complexity for tabular data.\nFuture Improvements: Real-time scoring API, SHAP explainability, A/B test framework for retention interventions.\n"
   },
   {
     "name": "Case-Competitions",
     "full_name": "ShaanRaza/Case-Competitions",
-    "description": "Case study solutions and competition entries including Jamia Case Challenge (3rd place among 380+ participants).",
+    "description": "Secured 3rd position among 380+ participants in Jamia Case Challenge for SweepIt solution.",
     "readme": "",
     "readme_summary": "Project: Case Competitions Portfolio\nPurpose: Repository of business case solutions and competition entries demonstrating strategic thinking and analytical skills.\nKey Achievement: Secured 3rd position among 380+ participants in the Jamia Case Challenge for developing a comprehensive business solution for SweepIt (now rebranded as Pronto), a rapidly growing startup in the on-demand services sector.\nCase: SweepIt / Pronto \u2014 On-Demand Home Services Startup\nProblem: Identify growth strategy, competitive positioning, and monetization optimization for a startup competing in a crowded market.\nSolution Framework: Market sizing, competitive analysis, unit economics modeling, growth hacking strategy, and technology roadmap.\nTools Used: Excel for financial modeling, PowerPoint for presentation, market research methodologies.\nOutcome: Top-3 finish, recognition from industry judges.\nSkills Demonstrated: Structured problem-solving, market analysis, financial modeling, strategic communication.\n",
     "language": "N/A",
@@ -118,8 +229,84 @@
     "stars": 0,
     "forks": 0,
     "url": "https://github.com/ShaanRaza/Case-Competitions",
-    "fetched_from_api": false,
-    "rag_content": "GitHub Repository: Case-Competitions\nURL: https://github.com/ShaanRaza/Case-Competitions\nDescription: Case study solutions and competition entries including Jamia Case Challenge (3rd place among 380+ participants).\nPrimary Language: N/A\nTopics: case-study, business-analysis, strategy, competition\n\nDetailed Information:\nProject: Case Competitions Portfolio\nPurpose: Repository of business case solutions and competition entries demonstrating strategic thinking and analytical skills.\nKey Achievement: Secured 3rd position among 380+ participants in the Jamia Case Challenge for developing a comprehensive business solution for SweepIt (now rebranded as Pronto), a rapidly growing startup in the on-demand services sector.\nCase: SweepIt / Pronto \u2014 On-Demand Home Services Startup\nProblem: Identify growth strategy, competitive positioning, and monetization optimization for a startup competing in a crowded market.\nSolution Framework: Market sizing, competitive analysis, unit economics modeling, growth hacking strategy, and technology roadmap.\nTools Used: Excel for financial modeling, PowerPoint for presentation, market research methodologies.\nOutcome: Top-3 finish, recognition from industry judges.\nSkills Demonstrated: Structured problem-solving, market analysis, financial modeling, strategic communication.\n"
+    "fetched_from_api": true,
+    "commits": [
+      {
+        "sha": "9dc9631",
+        "author": "Shaan Raza",
+        "date": "2025-08-20T13:29:33Z",
+        "message": "Add files via upload"
+      }
+    ],
+    "rag_content": "GitHub Repository: Case-Competitions\nURL: https://github.com/ShaanRaza/Case-Competitions\nDescription: Secured 3rd position among 380+ participants in Jamia Case Challenge for SweepIt solution.\nPrimary Language: N/A\nTopics: case-study, business-analysis, strategy, competition\n\nDetailed Information:\nProject: Case Competitions Portfolio\nPurpose: Repository of business case solutions and competition entries demonstrating strategic thinking and analytical skills.\nKey Achievement: Secured 3rd position among 380+ participants in the Jamia Case Challenge for developing a comprehensive business solution for SweepIt (now rebranded as Pronto), a rapidly growing startup in the on-demand services sector.\nCase: SweepIt / Pronto \u2014 On-Demand Home Services Startup\nProblem: Identify growth strategy, competitive positioning, and monetization optimization for a startup competing in a crowded market.\nSolution Framework: Market sizing, competitive analysis, unit economics modeling, growth hacking strategy, and technology roadmap.\nTools Used: Excel for financial modeling, PowerPoint for presentation, market research methodologies.\nOutcome: Top-3 finish, recognition from industry judges.\nSkills Demonstrated: Structured problem-solving, market analysis, financial modeling, strategic communication.\n\n\nRecent Commits:\n- Commit 9dc9631 by Shaan Raza on 2025-08-20T13:29:33Z: Add files via upload"
+  },
+  {
+    "name": "shaan-chatbot-backend",
+    "full_name": "ShaanRaza/shaan-chatbot-backend",
+    "description": "",
+    "readme": "# Public AI Representative & Voice Agent\n\nThis project is an AI persona that can be interacted with via chat or voice. It is grounded in a real resume and live GitHub repository commit histories, and it can book actual calendar events via Google Calendar API.\n\n## Architecture Diagram\n\n```mermaid\nflowchart TD\n    User([User])\n    \n    subagent_chat[Flask Chat Server]\n    subagent_voice[Vapi Voice Agent]\n    deepgram[Deepgram STT/TTS]\n    \n    rag[Local BM25 RAG Engine]\n    corpus[(Resume & GitHub Corpus)]\n    llm[LLM - Chat/Generation]\n    calendar[Google Calendar API]\n\n    User -- \"Text Chat\" --> subagent_chat\n    User -- \"Voice Call\" --> subagent_voice\n    \n    subagent_voice <--> deepgram\n    subagent_voice -- \"Webhooks / System Prompts\" --> subagent_chat\n    \n    subagent_chat <--> rag\n    rag <--> corpus\n    \n    subagent_chat <--> llm\n    \n    subagent_chat -- \"Availability & Booking\" --> calendar\n```\n\n## Setup Instructions\n\n1. **Clone the repository:**\n   ```bash\n   git clone <repo-url>\n   cd shaan-chatbot\n   ```\n\n2. **Install dependencies:**\n   ```bash\n   pip install -r requirements.txt\n   ```\n\n3. **Configure Environment:**\n   Create a `config.json` with your API keys (Google Calendar, LLM, Vapi).\n   Ensure `google_credentials.json` is placed in the root directory for calendar access.\n\n4. **Run the Chat Server:**\n   ```bash\n   python app.py\n   ```\n   The server will start on port 5001.\n\n5. **Run the Voice Admin Dashboard (Optional):**\n   ```bash\n   cd ../voice-agent-interview\n   python app.py\n   ```\n\n## Cost Breakdown\n\n- **Chat Sessions:** $0 (Using local BM25 RAG and free-tier LLMs where applicable).\n- **Voice Calls:** ~$0.18 per minute (Vapi platform fee of $0.15/min + Deepgram STT/Cartesia TTS costs).\n",
+    "readme_summary": "",
+    "language": "Python",
+    "topics": [],
+    "stars": 0,
+    "forks": 0,
+    "url": "https://github.com/ShaanRaza/shaan-chatbot-backend",
+    "fetched_from_api": true,
+    "commits": [
+      {
+        "sha": "aa2177e",
+        "author": "Shaan Raza",
+        "date": "2026-06-07T20:18:35Z",
+        "message": "Initial commit"
+      }
+    ],
+    "rag_content": "GitHub Repository: shaan-chatbot-backend\nURL: https://github.com/ShaanRaza/shaan-chatbot-backend\nDescription: \nPrimary Language: Python\nTopics: N/A\n\nREADME:\n# Public AI Representative & Voice Agent\n\nThis project is an AI persona that can be interacted with via chat or voice. It is grounded in a real resume and live GitHub repository commit histories, and it can book actual calendar events via Google Calendar API.\n\n## Architecture Diagram\n\n```mermaid\nflowchart TD\n    User([User])\n    \n    subagent_chat[Flask Chat Server]\n    subagent_voice[Vapi Voice Agent]\n    deepgram[Deepgram STT/TTS]\n    \n    rag[Local BM25 RAG Engine]\n    corpus[(Resume & GitHub Corpus)]\n    llm[LLM - Chat/Generation]\n    calendar[Google Calendar API]\n\n    User -- \"Text Chat\" --> subagent_chat\n    User -- \"Voice Call\" --> subagent_voice\n    \n    subagent_voice <--> deepgram\n    subagent_voice -- \"Webhooks / System Prompts\" --> subagent_chat\n    \n    subagent_chat <--> rag\n    rag <--> corpus\n    \n    subagent_chat <--> llm\n    \n    subagent_chat -- \"Availability & Booking\" --> calendar\n```\n\n## Setup Instructions\n\n1. **Clone the repository:**\n   ```bash\n   git clone <repo-url>\n   cd shaan-chatbot\n   ```\n\n2. **Install dependencies:**\n   ```bash\n   pip install -r requirements.txt\n   ```\n\n3. **Configure Environment:**\n   Create a `config.json` with your API keys (Google Calendar, LLM, Vapi).\n   Ensure `google_credentials.json` is placed in the root directory for calendar access.\n\n4. **Run the Chat Server:**\n   ```bash\n   python app.py\n   ```\n   The server will start on port 5001.\n\n5. **Run the Voice Admin Dashboard (Optional):**\n   ```bash\n   cd ../voice-agent-interview\n   python app.py\n   ```\n\n## Cost Breakdown\n\n- **Chat Sessions:** $0 (Using local BM25 RAG and free-tier LLMs where applicable).\n- **Voice Calls:** ~$0.18 per minute (Vapi platform fee of $0.15/min + Deepgram STT/Cartesia TTS costs).\n\n\nRecent Commits:\n- Commit aa2177e by Shaan Raza on 2026-06-07T20:18:35Z: Initial commit"
+  },
+  {
+    "name": "voice-agent-scheduler",
+    "full_name": "ShaanRaza/voice-agent-scheduler",
+    "description": "",
+    "readme": "",
+    "readme_summary": "",
+    "language": "Python",
+    "topics": [],
+    "stars": 0,
+    "forks": 0,
+    "url": "https://github.com/ShaanRaza/voice-agent-scheduler",
+    "fetched_from_api": true,
+    "commits": [
+      {
+        "sha": "f97277a",
+        "author": "Shaan Raza",
+        "date": "2026-06-07T16:59:00Z",
+        "message": "Add international calling recharge note for Indian numbers to cellular number info section"
+      },
+      {
+        "sha": "4316cc0",
+        "author": "Shaan Raza",
+        "date": "2026-06-07T14:31:18Z",
+        "message": "Fix horizontal layout overflow on mobile: add html/body overflow-x hidden, remove 100vw, apply full box-sizing and max-width boundaries on container, grid, columns, and cards"
+      },
+      {
+        "sha": "2094e1c",
+        "author": "Shaan Raza",
+        "date": "2026-06-07T14:25:16Z",
+        "message": "Improve mobile and tablet CSS responsiveness and fix overlapping/cramped elements"
+      },
+      {
+        "sha": "43ada36",
+        "author": "Shaan Raza",
+        "date": "2026-06-07T14:22:50Z",
+        "message": "Fix Google Calendar conference type from hangoutsMeet to eventNamedMeeting"
+      },
+      {
+        "sha": "7cb0bb5",
+        "author": "Shaan Raza",
+        "date": "2026-06-07T14:17:26Z",
+        "message": "Add defensive UUID validation check to assistant_id env var override"
+      }
+    ],
+    "rag_content": "GitHub Repository: voice-agent-scheduler\nURL: https://github.com/ShaanRaza/voice-agent-scheduler\nDescription: \nPrimary Language: Python\nTopics: N/A\n\nRecent Commits:\n- Commit f97277a by Shaan Raza on 2026-06-07T16:59:00Z: Add international calling recharge note for Indian numbers to cellular number info section\n- Commit 4316cc0 by Shaan Raza on 2026-06-07T14:31:18Z: Fix horizontal layout overflow on mobile: add html/body overflow-x hidden, remove 100vw, apply full box-sizing and max-width boundaries on container, grid, columns, and cards\n- Commit 2094e1c by Shaan Raza on 2026-06-07T14:25:16Z: Improve mobile and tablet CSS responsiveness and fix overlapping/cramped elements\n- Commit 43ada36 by Shaan Raza on 2026-06-07T14:22:50Z: Fix Google Calendar conference type from hangoutsMeet to eventNamedMeeting\n- Commit 7cb0bb5 by Shaan Raza on 2026-06-07T14:17:26Z: Add defensive UUID validation check to assistant_id env var override"
   },
   {
     "name": "shaan-chatbot-frontend",
@@ -127,26 +314,44 @@
     "description": "",
     "readme": "",
     "readme_summary": "",
-    "language": "",
+    "language": "HTML",
     "topics": [],
     "stars": 0,
     "forks": 0,
     "url": "https://github.com/ShaanRaza/shaan-chatbot-frontend",
-    "fetched_from_api": false,
-    "rag_content": "GitHub Repository: shaan-chatbot-frontend\nURL: https://github.com/ShaanRaza/shaan-chatbot-frontend\nDescription: \nPrimary Language: \nTopics: N/A"
-  },
-  {
-    "name": "shaan-chatbot-backend",
-    "full_name": "ShaanRaza/shaan-chatbot-backend",
-    "description": "",
-    "readme": "",
-    "readme_summary": "",
-    "language": "",
-    "topics": [],
-    "stars": 0,
-    "forks": 0,
-    "url": "https://github.com/ShaanRaza/shaan-chatbot-backend",
-    "fetched_from_api": false,
-    "rag_content": "GitHub Repository: shaan-chatbot-backend\nURL: https://github.com/ShaanRaza/shaan-chatbot-backend\nDescription: \nPrimary Language: \nTopics: N/A"
+    "fetched_from_api": true,
+    "commits": [
+      {
+        "sha": "a9ed654",
+        "author": "Shaan Raza",
+        "date": "2026-06-06T21:44:17Z",
+        "message": "Fix stats reset on 60s refresh: skip re-animation if already animated"
+      },
+      {
+        "sha": "b2d934d",
+        "author": "Shaan Raza",
+        "date": "2026-06-06T21:42:27Z",
+        "message": "Capitalize brand name in nav: shaan \u2192 Shaan"
+      },
+      {
+        "sha": "8833fe0",
+        "author": "Shaan Raza",
+        "date": "2026-06-06T20:56:38Z",
+        "message": "Fix stats counter: defer IntersectionObserver until /api/stats loads"
+      },
+      {
+        "sha": "c830204",
+        "author": "Shaan Raza",
+        "date": "2026-06-06T20:53:05Z",
+        "message": "Fix LinkedIn URL to linkedin.com/in/shaanraza"
+      },
+      {
+        "sha": "7851091",
+        "author": "Shaan Raza",
+        "date": "2026-06-06T20:48:42Z",
+        "message": "Fix booking modal: align JS class names (active\u2192open) with CSS"
+      }
+    ],
+    "rag_content": "GitHub Repository: shaan-chatbot-frontend\nURL: https://github.com/ShaanRaza/shaan-chatbot-frontend\nDescription: \nPrimary Language: HTML\nTopics: N/A\n\nRecent Commits:\n- Commit a9ed654 by Shaan Raza on 2026-06-06T21:44:17Z: Fix stats reset on 60s refresh: skip re-animation if already animated\n- Commit b2d934d by Shaan Raza on 2026-06-06T21:42:27Z: Capitalize brand name in nav: shaan \u2192 Shaan\n- Commit 8833fe0 by Shaan Raza on 2026-06-06T20:56:38Z: Fix stats counter: defer IntersectionObserver until /api/stats loads\n- Commit c830204 by Shaan Raza on 2026-06-06T20:53:05Z: Fix LinkedIn URL to linkedin.com/in/shaanraza\n- Commit 7851091 by Shaan Raza on 2026-06-06T20:48:42Z: Fix booking modal: align JS class names (active\u2192open) with CSS"
   }
 ]

@@ -199,6 +199,9 @@ Shaan's combination of technical depth (ML, SQL, Python automation) with busines
             print("[RAG] Fetching latest GitHub repos dynamically...")
             from github_fetcher import fetch_all_repos, GITHUB_USERNAME, KNOWN_REPOS, build_rag_content
             repos = fetch_all_repos(GITHUB_USERNAME, list(KNOWN_REPOS))
+            # Prevent overwriting a good local cache with degraded fallback data if API is rate-limited
+            if os.path.exists(GITHUB_FILE) and not any(r.get("fetched_from_api") for r in repos):
+                raise RuntimeError("All GitHub API requests returned rate-limit (403) or failed. Preserving local cache.")
             for repo in repos:
                 repo["rag_content"] = build_rag_content(repo)
             os.makedirs("knowledge", exist_ok=True)
@@ -352,7 +355,7 @@ Shaan's combination of technical depth (ML, SQL, Python automation) with busines
     # Retrieval
     # ─────────────────────────────────────────────────────────────
 
-    def retrieve(self, query: str, top_k: int = 6, threshold: float = 0.03) -> List[Dict]:
+    def retrieve(self, query: str, top_k: int = 6, threshold: float = 0.03, force_calendar: bool = False) -> List[Dict]:
         """Retrieve top-k relevant chunks for a query."""
         if not self.is_loaded:
             raise RuntimeError("Knowledge base is not loaded. Ensure synchronous startup load succeeded.")
@@ -390,11 +393,21 @@ Shaan's combination of technical depth (ML, SQL, Python automation) with busines
                     c["score"] = 0.01
                     results.append(c)
 
+        if force_calendar:
+            already_has_calendar = any(c.get("source") == "calendar" for c in results)
+            if not already_has_calendar:
+                for chunk in self.chunks:
+                    if chunk.get("source") == "calendar":
+                        cal = chunk.copy()
+                        cal["score"] = max((c.get("score", 0) for c in results), default=0) + 0.01
+                        results.append(cal)
+                        break
+
         return results
 
-    def retrieve_and_build_context(self, query: str, top_k: int = 6) -> tuple:
+    def retrieve_and_build_context(self, query: str, top_k: int = 6, force_calendar: bool = False) -> tuple:
         """Retrieve chunks and build a formatted context string with citations."""
-        chunks = self.retrieve(query, top_k=top_k)
+        chunks = self.retrieve(query, top_k=top_k, force_calendar=force_calendar)
 
         if not chunks:
             return "", []
