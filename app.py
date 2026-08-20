@@ -65,6 +65,11 @@ rag = RAGEngine()
 # LLM client reference (Gemini or NVIDIA NIM, via OpenAI-compatible SDK)
 nvidia_client = None
 llm_model = None
+# Automatic fallback client (NVIDIA NIM) used when the primary (Gemini) hits a
+# quota/rate-limit error, so the daily 20-request free-tier cap doesn't take
+# the chatbot down mid-day.
+fallback_client = None
+fallback_model = None
 
 # ─────────────────────────────────────────────────────────────────
 # System Prompt — Grounding + Injection Resistance
@@ -151,27 +156,29 @@ def save_config(config):
 
 
 def get_nvidia_api_key() -> Optional[str]:
-    """Get NVIDIA API key from env or config."""
-    key = os.environ.get("NVIDIA_API_KEY", "").strip()
-    if key:
-        return key
+    """Get the configured LLM API key (Gemini primary, Groq fallback) from env or config."""
     key = os.environ.get("GEMINI_API_KEY", "").strip()
     if key:
         return key
+    key = os.environ.get("GROQ_API_KEY", "").strip()
+    if key:
+        return key
     config = get_config()
-    return config.get("nvidia_api_key", "").strip() or config.get("gemini_api_key", "").strip() or None
+    return config.get("gemini_api_key", "").strip() or config.get("groq_api_key", "").strip() or None
 
 
 def init_nvidia():
-    """Initialize LLM client using openai SDK, against Gemini's OpenAI-compatible endpoint
-    (preferred) or NVIDIA NIM as a fallback, depending on which API key is configured."""
-    global nvidia_client, llm_model
+    """Initialize LLM client(s) using openai SDK. Gemini (OpenAI-compatible endpoint) is
+    the primary client when GEMINI_API_KEY is set. If GROQ_API_KEY is also set, Groq is
+    configured as an automatic fallback for when Gemini's free-tier quota (20
+    requests/day) is exhausted mid-conversation."""
+    global nvidia_client, llm_model, fallback_client, fallback_model
     if not nvidia_available:
         print("[ERROR] openai library is not available. Cannot configure LLM client.")
         return False
 
     gemini_key = os.environ.get("GEMINI_API_KEY", "").strip() or get_config().get("gemini_api_key", "").strip()
-    nvidia_key = os.environ.get("NVIDIA_API_KEY", "").strip() or get_config().get("nvidia_api_key", "").strip()
+    groq_key = os.environ.get("GROQ_API_KEY", "").strip() or get_config().get("groq_api_key", "").strip()
 
     try:
         if gemini_key:
@@ -182,18 +189,26 @@ def init_nvidia():
             llm_model = "gemini-3.6-flash"
             print(f"[INFO] Gemini API key loaded successfully (length: {len(gemini_key)})")
             print(f"[OK] Gemini client configured successfully. Model: {llm_model}")
+
+            if groq_key:
+                fallback_client = OpenAI(
+                    base_url="https://api.groq.com/openai/v1",
+                    api_key=groq_key
+                )
+                fallback_model = "openai/gpt-oss-20b"
+                print(f"[OK] Groq configured as automatic fallback. Model: {fallback_model}")
             return True
-        elif nvidia_key:
+        elif groq_key:
             nvidia_client = OpenAI(
-                base_url="https://integrate.api.nvidia.com/v1",
-                api_key=nvidia_key
+                base_url="https://api.groq.com/openai/v1",
+                api_key=groq_key
             )
-            llm_model = "meta/llama-3.3-70b-instruct"
-            print(f"[INFO] NVIDIA API key loaded successfully (length: {len(nvidia_key)})")
-            print(f"[OK] NVIDIA NIM client configured successfully. Model: {llm_model}")
+            llm_model = "openai/gpt-oss-20b"
+            print(f"[INFO] Groq API key loaded successfully (length: {len(groq_key)})")
+            print(f"[OK] Groq client configured successfully. Model: {llm_model}")
             return True
         else:
-            print("[ERROR] No LLM API key is configured. Set GEMINI_API_KEY or NVIDIA_API_KEY environment variable.")
+            print("[ERROR] No LLM API key is configured. Set GEMINI_API_KEY or GROQ_API_KEY environment variable.")
             return False
     except Exception as e:
         nvidia_client = None
@@ -1288,7 +1303,7 @@ def detect_off_topic_heuristics(query: str) -> bool:
     # 4. Politics
     politics_keywords = [
         "politics", "political", "election", "democrat", "republican", "bjp",
-        "congress", "parliament", "government", "senator", "governor", "mayor",
+        "parliament", "senator", "governor", "mayor",
         "prime minister", "president", "modi", "obama", "trump", "biden"
     ]
     if any(re.search(rf"\b{kw}\b", q_lower) for kw in politics_keywords):
@@ -1516,22 +1531,41 @@ def generate_response(session_id: str, query: str) -> dict:
             history=history_str,
             query=query
         )
-        try:
-            print(f"[INFO] Calling LLM (model: {llm_model})...")
-            response = nvidia_client.chat.completions.create(
-                model=llm_model,
+        def _build_kwargs(model: str) -> dict:
+            kwargs = dict(
+                model=model,
                 messages=[{"role": "user", "content": prompt}],
-                max_tokens=1024,
+                max_tokens=2048,
                 temperature=0.3 if is_booking else 0.7
             )
+            if model.startswith("gemini"):
+                # Gemini's "thinking" tokens otherwise eat into max_tokens and can
+                # truncate the visible answer before it's finished (finish_reason
+                # "length" with content cut off mid-sentence). Low reasoning effort
+                # is plenty for a grounded fact-lookup chatbot like this one.
+                kwargs["reasoning_effort"] = "low"
+            return kwargs
+
+        try:
+            print(f"[INFO] Calling LLM (model: {llm_model})...")
+            response = nvidia_client.chat.completions.create(**_build_kwargs(llm_model))
             response_text = response.choices[0].message.content.strip()
             print("[OK] LLM response generated successfully.")
         except Exception as e:
-            print(f"[ERROR] LLM call failed: {e}")
-            import traceback
-            traceback.print_exc()
+            print(f"[ERROR] LLM call failed ({llm_model}): {e}")
             error = str(e)
-            
+
+            if fallback_client:
+                try:
+                    print(f"[INFO] Retrying against fallback LLM (model: {fallback_model})...")
+                    response = fallback_client.chat.completions.create(**_build_kwargs(fallback_model))
+                    response_text = response.choices[0].message.content.strip()
+                    print("[OK] Fallback LLM response generated successfully.")
+                    error = None
+                except Exception as fallback_e:
+                    print(f"[ERROR] Fallback LLM call also failed ({fallback_model}): {fallback_e}")
+                    error = str(fallback_e)
+
         if not response_text:
             response_text = FALLBACK_RESPONSE
             
