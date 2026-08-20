@@ -1,12 +1,10 @@
 """
-rag_engine.py — Hybrid BM25 + semantic embedding RAG engine for Shaan Raza AI chatbot.
+rag_engine.py — BM25 RAG engine for Shaan Raza AI chatbot.
 Handles knowledge base loading, recursive chunking, indexing, and retrieval.
 
-Retrieval: reciprocal rank fusion (RRF) over two independent rankers —
-  1. BM25 (rank_bm25.BM25Okapi) — lexical/keyword search, in-memory, no embeddings.
-  2. Semantic similarity via a persistent Chroma vector store, embedded with
-     Chroma's bundled ONNX MiniLM model (all-MiniLM-L6-v2, 384-dim, CPU-only,
-     no torch dependency).
+Retrieval is pure BM25 (rank_bm25.BM25Okapi) — lexical/keyword search,
+in-memory, no embedding model or vector database. Chosen for low memory
+footprint (fits comfortably on free-tier hosting) and low latency.
 """
 
 import os
@@ -15,7 +13,6 @@ import json
 import numpy as np
 from typing import List, Dict, Optional
 from rank_bm25 import BM25Okapi
-import chromadb
 
 
 # ─────────────────────────────────────────────────────────────────
@@ -32,11 +29,7 @@ import chromadb
 RESUME_FILE = "resume.txt"
 GITHUB_FILE = "knowledge/github_repos.json"
 CALENDAR_FILE = "calendar_store.json"
-CHROMA_DIR = "chroma_store"
-CHROMA_COLLECTION = "shaan_chunks"
-EMBEDDING_MODEL_NAME = "all-MiniLM-L6-v2"  # Chroma's default ONNX embedding function
 
-RRF_K = 60  # standard reciprocal-rank-fusion constant
 RECURSIVE_CHUNK_SIZE = 800   # target chars per chunk
 RECURSIVE_CHUNK_OVERLAP = 120
 
@@ -123,9 +116,6 @@ class RAGEngine:
 
         self.bm25: Optional[BM25Okapi] = None
         self._id_to_index: Dict[str, int] = {}
-
-        self._chroma_client = None
-        self._chroma_collection = None
 
     # ─────────────────────────────────────────────────────────────
     # Knowledge Base Loading
@@ -415,7 +405,7 @@ Shaan's combination of technical depth (ML, SQL, Python automation) with busines
         return chunks
 
     # ─────────────────────────────────────────────────────────────
-    # Hybrid Index: BM25 (lexical) + Chroma (semantic embeddings)
+    # BM25 Index — pure lexical, in-memory, no embeddings/vector DB
     # ─────────────────────────────────────────────────────────────
 
     def _build_index(self):
@@ -423,45 +413,16 @@ Shaan's combination of technical depth (ML, SQL, Python automation) with busines
         ids = [c["id"] for c in self.chunks]
         self._id_to_index = {cid: i for i, cid in enumerate(ids)}
 
-        # 1. BM25 — pure lexical, in-memory, no embeddings required.
         tokenized_corpus = [_tokenize(t) for t in texts]
         self.bm25 = BM25Okapi(tokenized_corpus)
         print(f"[RAG] BM25 index built over {len(texts)} chunks")
 
-        # 2. Chroma — semantic vectors via the bundled ONNX MiniLM embedder.
-        self._chroma_client = chromadb.PersistentClient(path=CHROMA_DIR)
-        try:
-            self._chroma_client.delete_collection(CHROMA_COLLECTION)
-        except Exception:
-            pass
-        self._chroma_collection = self._chroma_client.create_collection(
-            name=CHROMA_COLLECTION,
-            metadata={"hnsw:space": "cosine"}
-        )
-
-        flat_metadatas = [self._flatten_metadata(c) for c in self.chunks]
-        # Chroma's add() batches internally; chunk sets here are small (tens of docs).
-        self._chroma_collection.add(ids=ids, documents=texts, metadatas=flat_metadatas)
-        print(f"[RAG] Chroma semantic index built: {self._chroma_collection.count()} vectors "
-              f"(embedding model: {EMBEDDING_MODEL_NAME})")
-
-    @staticmethod
-    def _flatten_metadata(chunk: Dict) -> Dict:
-        """Chroma metadata values must be str/int/float/bool — flatten and stringify."""
-        flat = {"source": chunk["source"], "section": chunk["section"]}
-        for k, v in chunk.get("metadata", {}).items():
-            if isinstance(v, (str, int, float, bool)):
-                flat[k] = v
-            else:
-                flat[k] = json.dumps(v)
-        return flat
-
     # ─────────────────────────────────────────────────────────────
-    # Retrieval — Reciprocal Rank Fusion over BM25 + semantic search
+    # Retrieval — BM25 ranking
     # ─────────────────────────────────────────────────────────────
 
     def retrieve(self, query: str, top_k: int = 6, threshold: float = 0.0, force_calendar: bool = False) -> List[Dict]:
-        """Retrieve top-k relevant chunks for a query via hybrid BM25 + semantic RRF."""
+        """Retrieve top-k relevant chunks for a query via BM25."""
         if not self.is_loaded:
             raise RuntimeError("Knowledge base is not loaded. Ensure synchronous startup load succeeded.")
 
@@ -471,35 +432,14 @@ Shaan's combination of technical depth (ML, SQL, Python automation) with busines
 
         pool_size = min(top_k * 4, len(self.chunks))
 
-        # Lexical ranking (BM25)
         bm25_scores = self.bm25.get_scores(_tokenize(query))
-        bm25_ranked_idx = np.argsort(bm25_scores)[::-1][:pool_size]
-        bm25_ranked_ids = [self.chunks[i]["id"] for i in bm25_ranked_idx if bm25_scores[i] > 0]
-
-        # Semantic ranking (Chroma / MiniLM embeddings)
-        semantic_ranked_ids: List[str] = []
-        try:
-            chroma_results = self._chroma_collection.query(query_texts=[query], n_results=pool_size)
-            semantic_ranked_ids = chroma_results.get("ids", [[]])[0]
-        except Exception as e:
-            print(f"[RAG] WARNING: semantic query failed, falling back to BM25 only: {e}")
-
-        # Reciprocal Rank Fusion
-        rrf_scores: Dict[str, float] = {}
-        for rank, cid in enumerate(bm25_ranked_ids):
-            rrf_scores[cid] = rrf_scores.get(cid, 0.0) + 1.0 / (RRF_K + rank + 1)
-        for rank, cid in enumerate(semantic_ranked_ids):
-            rrf_scores[cid] = rrf_scores.get(cid, 0.0) + 1.0 / (RRF_K + rank + 1)
-
-        ranked_ids = sorted(rrf_scores.items(), key=lambda kv: kv[1], reverse=True)
+        ranked_idx = np.argsort(bm25_scores)[::-1][:pool_size]
 
         results = []
         seen_sources = set()
-        for cid, score in ranked_ids:
-            if score < threshold:
-                continue
-            idx = self._id_to_index.get(cid)
-            if idx is None:
+        for idx in ranked_idx:
+            score = float(bm25_scores[idx])
+            if score <= threshold:
                 continue
             chunk = self.chunks[idx].copy()
             chunk["score"] = round(score, 4)
@@ -591,9 +531,8 @@ Shaan's combination of technical depth (ML, SQL, Python automation) with busines
         return {
             "total_chunks": len(self.chunks),
             "by_source": by_source,
-            "retrieval": "hybrid BM25 + semantic (RRF)",
-            "embedding_model": EMBEDDING_MODEL_NAME,
-            "vector_store": f"Chroma (persistent, {CHROMA_DIR})",
-            "chroma_vectors": self._chroma_collection.count() if self._chroma_collection else 0,
+            "retrieval": "BM25",
+            "embedding_model": None,
+            "vector_store": None,
             "is_loaded": self.is_loaded
         }
