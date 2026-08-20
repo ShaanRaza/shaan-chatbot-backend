@@ -1762,19 +1762,22 @@ def api_config():
     if request.method == "GET":
         config = get_config()
         masked = config.copy()
-        nvidia_key = masked.get("nvidia_api_key") or masked.get("gemini_api_key")
-        if nvidia_key:
-            masked["nvidia_api_key"] = nvidia_key[:8] + "..." + nvidia_key[-4:]
-            masked["gemini_api_key"] = nvidia_key[:8] + "..." + nvidia_key[-4:]
+        for field in ("gemini_api_key", "groq_api_key"):
+            key = masked.get(field)
+            if key:
+                masked[field] = key[:8] + "..." + key[-4:]
         return jsonify(masked)
 
     data = request.json or {}
     config = get_config()
 
-    new_key = data.get("nvidia_api_key") or data.get("gemini_api_key")
-    if new_key and new_key.strip():
-        config["nvidia_api_key"] = new_key.strip()
-        config["gemini_api_key"] = new_key.strip()
+    gemini_key = data.get("gemini_api_key")
+    if gemini_key and gemini_key.strip():
+        config["gemini_api_key"] = gemini_key.strip()
+
+    groq_key = data.get("groq_api_key")
+    if groq_key and groq_key.strip():
+        config["groq_api_key"] = groq_key.strip()
 
     if "google_calendar_id" in data:
         config["google_calendar_id"] = data["google_calendar_id"].strip()
@@ -1791,8 +1794,7 @@ def api_config():
     return jsonify({
         "success": True,
         "gemini_ready": success,
-        "nvidia_ready": success,
-        "message": "Configuration saved." + (" NVIDIA NIM model ready." if success else " NVIDIA key invalid or missing.")
+        "message": "Configuration saved." + (" LLM client ready." if success else " No valid API key configured.")
     })
 
 
