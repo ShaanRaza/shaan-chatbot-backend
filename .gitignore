@@ -8,3 +8,5 @@ __pycache__/
 .env
 backend/config.json
 backend/google_credentials.json
+chroma_store/
+venv/

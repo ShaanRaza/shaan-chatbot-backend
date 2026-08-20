@@ -62,8 +62,9 @@ SESSIONS_LOCK = threading.Lock()
 # Global RAG engine
 rag = RAGEngine()
 
-# NVIDIA client reference
+# LLM client reference (Gemini or NVIDIA NIM, via OpenAI-compatible SDK)
 nvidia_client = None
+llm_model = None
 
 # ─────────────────────────────────────────────────────────────────
 # System Prompt — Grounding + Injection Resistance
@@ -162,31 +163,41 @@ def get_nvidia_api_key() -> Optional[str]:
 
 
 def init_nvidia():
-    """Initialize NVIDIA NIM client using openai SDK."""
-    global nvidia_client
+    """Initialize LLM client using openai SDK, against Gemini's OpenAI-compatible endpoint
+    (preferred) or NVIDIA NIM as a fallback, depending on which API key is configured."""
+    global nvidia_client, llm_model
     if not nvidia_available:
-        print("[ERROR] openai library is not available. Cannot configure NVIDIA NIM.")
+        print("[ERROR] openai library is not available. Cannot configure LLM client.")
         return False
-        
-    api_key = get_nvidia_api_key()
-    
-    if api_key:
-        print(f"[INFO] NVIDIA/Gemini API key loaded successfully (length: {len(api_key)})")
-    else:
-        print("[ERROR] NVIDIA API key is not configured. Set NVIDIA_API_KEY environment variable.")
-        return False
-        
+
+    gemini_key = os.environ.get("GEMINI_API_KEY", "").strip() or get_config().get("gemini_api_key", "").strip()
+    nvidia_key = os.environ.get("NVIDIA_API_KEY", "").strip() or get_config().get("nvidia_api_key", "").strip()
+
     try:
-        # Initialize the OpenAI-compatible Client AFTER environment variables are loaded
-        nvidia_client = OpenAI(
-            base_url="https://integrate.api.nvidia.com/v1",
-            api_key=api_key
-        )
-        print("[OK] NVIDIA NIM client configured successfully. Model: minimaxai/minimax-m2.7")
-        return True
+        if gemini_key:
+            nvidia_client = OpenAI(
+                base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
+                api_key=gemini_key
+            )
+            llm_model = "gemini-3.6-flash"
+            print(f"[INFO] Gemini API key loaded successfully (length: {len(gemini_key)})")
+            print(f"[OK] Gemini client configured successfully. Model: {llm_model}")
+            return True
+        elif nvidia_key:
+            nvidia_client = OpenAI(
+                base_url="https://integrate.api.nvidia.com/v1",
+                api_key=nvidia_key
+            )
+            llm_model = "meta/llama-3.3-70b-instruct"
+            print(f"[INFO] NVIDIA API key loaded successfully (length: {len(nvidia_key)})")
+            print(f"[OK] NVIDIA NIM client configured successfully. Model: {llm_model}")
+            return True
+        else:
+            print("[ERROR] No LLM API key is configured. Set GEMINI_API_KEY or NVIDIA_API_KEY environment variable.")
+            return False
     except Exception as e:
         nvidia_client = None
-        print(f"[ERROR] Failed to configure NVIDIA NIM client: {e}")
+        print(f"[ERROR] Failed to configure LLM client: {e}")
         import traceback
         traceback.print_exc()
         return False
@@ -1506,17 +1517,17 @@ def generate_response(session_id: str, query: str) -> dict:
             query=query
         )
         try:
-            print("[INFO] Calling NVIDIA NIM LLM (model: minimaxai/minimax-m2.7)...")
+            print(f"[INFO] Calling LLM (model: {llm_model})...")
             response = nvidia_client.chat.completions.create(
-                model="minimaxai/minimax-m2.7",
+                model=llm_model,
                 messages=[{"role": "user", "content": prompt}],
                 max_tokens=1024,
                 temperature=0.3 if is_booking else 0.7
             )
             response_text = response.choices[0].message.content.strip()
-            print("[OK] NVIDIA NIM LLM response generated successfully.")
+            print("[OK] LLM response generated successfully.")
         except Exception as e:
-            print(f"[ERROR] NVIDIA NIM LLM failed: {e}")
+            print(f"[ERROR] LLM call failed: {e}")
             import traceback
             traceback.print_exc()
             error = str(e)

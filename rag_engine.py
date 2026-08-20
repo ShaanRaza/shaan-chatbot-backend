@@ -1,15 +1,21 @@
 """
-rag_engine.py — TF-IDF based RAG engine for Shaan Raza AI chatbot.
-Handles knowledge base loading, chunking, indexing, and retrieval.
+rag_engine.py — Hybrid BM25 + semantic embedding RAG engine for Shaan Raza AI chatbot.
+Handles knowledge base loading, recursive chunking, indexing, and retrieval.
+
+Retrieval: reciprocal rank fusion (RRF) over two independent rankers —
+  1. BM25 (rank_bm25.BM25Okapi) — lexical/keyword search, in-memory, no embeddings.
+  2. Semantic similarity via a persistent Chroma vector store, embedded with
+     Chroma's bundled ONNX MiniLM model (all-MiniLM-L6-v2, 384-dim, CPU-only,
+     no torch dependency).
 """
 
 import os
-import json
 import re
+import json
 import numpy as np
 from typing import List, Dict, Optional
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
+from rank_bm25 import BM25Okapi
+import chromadb
 
 
 # ─────────────────────────────────────────────────────────────────
@@ -26,48 +32,128 @@ from sklearn.metrics.pairwise import cosine_similarity
 RESUME_FILE = "resume.txt"
 GITHUB_FILE = "knowledge/github_repos.json"
 CALENDAR_FILE = "calendar_store.json"
+CHROMA_DIR = "chroma_store"
+CHROMA_COLLECTION = "shaan_chunks"
+EMBEDDING_MODEL_NAME = "all-MiniLM-L6-v2"  # Chroma's default ONNX embedding function
+
+RRF_K = 60  # standard reciprocal-rank-fusion constant
+RECURSIVE_CHUNK_SIZE = 800   # target chars per chunk
+RECURSIVE_CHUNK_OVERLAP = 120
+
+
+# ─────────────────────────────────────────────────────────────────
+# Recursive chunking (structural: paragraphs → lines → sentences →
+# words → chars, no embedding model required)
+# ─────────────────────────────────────────────────────────────────
+
+def recursive_chunk_text(text: str, chunk_size: int = RECURSIVE_CHUNK_SIZE,
+                          chunk_overlap: int = RECURSIVE_CHUNK_OVERLAP,
+                          separators: Optional[List[str]] = None) -> List[str]:
+    """Split text into overlapping chunks, preferring larger structural
+    boundaries (paragraph > line > sentence > word) before falling back
+    to a hard character split."""
+    text = text.strip()
+    if not text:
+        return []
+    if len(text) <= chunk_size:
+        return [text]
+
+    if separators is None:
+        separators = ["\n\n", "\n", ". ", " ", ""]
+
+    separator = separators[0]
+    remaining = separators[1:]
+    pieces = list(text) if separator == "" else text.split(separator)
+
+    # Recurse into any piece that's still too large before merging.
+    expanded = []
+    for piece in pieces:
+        if len(piece) > chunk_size and remaining:
+            expanded.extend(recursive_chunk_text(piece, chunk_size, chunk_overlap, remaining))
+        elif piece:
+            expanded.append(piece)
+
+    return _merge_pieces(expanded, separator, chunk_size, chunk_overlap)
+
+
+def _merge_pieces(pieces: List[str], separator: str, chunk_size: int, chunk_overlap: int) -> List[str]:
+    """Greedily pack small pieces back together up to chunk_size, carrying
+    a trailing overlap window into the next chunk for context continuity."""
+    chunks = []
+    current: List[str] = []
+    current_len = 0
+    sep_len = len(separator)
+
+    def flush():
+        if current:
+            chunks.append(separator.join(current).strip())
+
+    for piece in pieces:
+        piece_len = len(piece)
+        added_len = piece_len + (sep_len if current else 0)
+        if current and current_len + added_len > chunk_size:
+            flush()
+            # Keep trailing pieces (by char budget) for overlap continuity.
+            overlap_pieces = []
+            overlap_len = 0
+            for p in reversed(current):
+                if overlap_len + len(p) > chunk_overlap:
+                    break
+                overlap_pieces.insert(0, p)
+                overlap_len += len(p) + sep_len
+            current = overlap_pieces
+            current_len = overlap_len
+
+        current.append(piece)
+        current_len += piece_len + (sep_len if len(current) > 1 else 0)
+
+    flush()
+    return [c for c in chunks if c]
+
+
+def _tokenize(text: str) -> List[str]:
+    """Simple lowercase word tokenizer for BM25."""
+    return re.findall(r"[a-z0-9]+", text.lower())
 
 
 class RAGEngine:
     def __init__(self):
         self.chunks: List[Dict] = []
-        self.vectorizer: Optional[TfidfVectorizer] = None
-        self.chunk_matrix = None
         self.is_loaded = False
+
+        self.bm25: Optional[BM25Okapi] = None
+        self._id_to_index: Dict[str, int] = {}
+
+        self._chroma_client = None
+        self._chroma_collection = None
 
     # ─────────────────────────────────────────────────────────────
     # Knowledge Base Loading
     # ─────────────────────────────────────────────────────────────
 
     def load(self):
-        """Load all knowledge sources and build the TF-IDF index."""
+        """Load all knowledge sources and build the BM25 + semantic index."""
         try:
             chunks = []
-            
-            # Load resume chunks
+
             try:
-                resume_chunks = self._load_resume_chunks()
-                chunks.extend(resume_chunks)
+                chunks.extend(self._load_resume_chunks())
             except Exception as e:
                 print(f"[ERROR] Failed to load resume chunks: {e}")
                 import traceback
                 traceback.print_exc()
                 raise e
-                
-            # Load GitHub chunks
+
             try:
-                github_chunks = self._load_github_chunks()
-                chunks.extend(github_chunks)
+                chunks.extend(self._load_github_chunks())
             except Exception as e:
                 print(f"[ERROR] Failed to load GitHub chunks: {e}")
                 import traceback
                 traceback.print_exc()
                 raise e
-                
-            # Load Calendar chunks
+
             try:
-                calendar_chunks = self._load_calendar_chunks()
-                chunks.extend(calendar_chunks)
+                chunks.extend(self._load_calendar_chunks())
             except Exception as e:
                 print(f"[ERROR] Failed to load calendar chunks: {e}")
                 import traceback
@@ -95,7 +181,7 @@ class RAGEngine:
             print(f"[RAG]   {src}: {count} chunks")
 
     # ─────────────────────────────────────────────────────────────
-    # Resume Chunking — Section-aware
+    # Resume Chunking — Section-aware + recursive sub-chunking
     # ─────────────────────────────────────────────────────────────
 
     def _load_resume_chunks(self) -> List[Dict]:
@@ -107,7 +193,6 @@ class RAGEngine:
         with open(RESUME_FILE, "r") as f:
             content = f.read()
 
-        # Header chunk (contact info)
         header_match = re.search(r"^(.*?)(?=={3,})", content, re.DOTALL)
         if header_match:
             header = header_match.group(1).strip()
@@ -119,7 +204,6 @@ class RAGEngine:
                 {"file": RESUME_FILE}
             ))
 
-        # Split by numbered sections (===...===)
         sections = re.split(r"={3,}\n\d+\.\s+", content)
         section_headers = re.findall(r"={3,}\n\d+\.\s+([^\n]+)", content)
 
@@ -127,20 +211,25 @@ class RAGEngine:
             header = header.strip()
             body = body.strip()
 
-            # Split long sections into sub-chunks
-            if len(body) > 800:
-                sub_chunks = self._split_section(body, header, i)
-                chunks.extend(sub_chunks)
-            else:
+            parts = recursive_chunk_text(body)
+            if len(parts) == 1:
                 chunks.append(self._make_chunk(
                     f"resume_section_{i}",
                     "resume",
                     header,
-                    f"Section: {header}\n{body}",
+                    f"Section: {header}\n{parts[0]}",
                     {"file": RESUME_FILE, "section_index": i}
                 ))
+            else:
+                for part_idx, part_text in enumerate(parts):
+                    chunks.append(self._make_chunk(
+                        f"resume_section_{i}_part{part_idx}",
+                        "resume",
+                        header,
+                        f"Section: {header} (Part {part_idx + 1})\n{part_text}",
+                        {"file": RESUME_FILE, "section_index": i, "part": part_idx}
+                    ))
 
-        # Add a combined "role fit" chunk for quick hire-me queries
         chunks.append(self._make_chunk(
             "resume_rolefit",
             "resume",
@@ -163,51 +252,39 @@ Shaan's combination of technical depth (ML, SQL, Python automation) with busines
 
         return chunks
 
-    def _split_section(self, text: str, section_name: str, section_idx: int) -> List[Dict]:
-        """Split a long section into overlapping chunks of ~300 words."""
-        words = text.split()
-        chunks = []
-        chunk_size = 200
-        overlap = 40
-        i = 0
-        part = 0
-
-        while i < len(words):
-            chunk_words = words[i:i + chunk_size]
-            chunk_text = " ".join(chunk_words)
-            chunks.append(self._make_chunk(
-                f"resume_section_{section_idx}_part{part}",
-                "resume",
-                section_name,
-                f"Section: {section_name} (Part {part + 1})\n{chunk_text}",
-                {"section_index": section_idx, "part": part}
-            ))
-            i += chunk_size - overlap
-            part += 1
-
-        return chunks
-
     # ─────────────────────────────────────────────────────────────
-    # GitHub Chunks
+    # GitHub Chunks — recursive sub-chunking for long content
     # ─────────────────────────────────────────────────────────────
 
     def _load_github_chunks(self) -> List[Dict]:
         chunks = []
-        
-        # Try to fetch fresh GitHub data dynamically if cache is missing or explicitly requested
+
         if not os.path.exists(GITHUB_FILE) or os.environ.get("REFRESH_GITHUB_CACHE") == "true":
             try:
                 print("[RAG] Fetching latest GitHub repos dynamically...")
                 from github_fetcher import fetch_all_repos, GITHUB_USERNAME, KNOWN_REPOS, build_rag_content
                 repos = fetch_all_repos(GITHUB_USERNAME, list(KNOWN_REPOS))
-                # Prevent overwriting a good local cache with degraded fallback data if API is rate-limited
-                if os.path.exists(GITHUB_FILE) and not any(r.get("fetched_from_api") for r in repos):
-                    raise RuntimeError("All GitHub API requests returned rate-limit (403) or failed. Preserving local cache.")
+
+                # Merge per-repo: a repo that failed/rate-limited this run keeps its
+                # previous cached entry instead of being overwritten with degraded data.
+                old_by_name = {}
+                if os.path.exists(GITHUB_FILE):
+                    with open(GITHUB_FILE, "r") as f:
+                        old_by_name = {r.get("name"): r for r in json.load(f)}
+
+                merged = []
                 for repo in repos:
+                    name = repo.get("name")
+                    if not repo.get("fetched_from_api") and name in old_by_name:
+                        print(f"[RAG]   Keeping cached data for {name} (rate-limited/failed this run)")
+                        merged.append(old_by_name[name])
+                        continue
                     repo["rag_content"] = build_rag_content(repo)
+                    merged.append(repo)
+
                 os.makedirs("knowledge", exist_ok=True)
                 with open(GITHUB_FILE, "w") as f:
-                    json.dump(repos, f, indent=2)
+                    json.dump(merged, f, indent=2)
                 print("[RAG] Successfully fetched and cached live GitHub data.")
             except Exception as e:
                 print(f"[RAG] WARNING: Failed to fetch live GitHub data, using local cache or fallback: {e}")
@@ -216,7 +293,6 @@ Shaan's combination of technical depth (ML, SQL, Python automation) with busines
 
         if not os.path.exists(GITHUB_FILE):
             print(f"[RAG] WARNING: {GITHUB_FILE} not found. Run github_fetcher.py first.")
-            # Use fallback minimal chunks
             return self._get_github_fallback_chunks()
 
         with open(GITHUB_FILE, "r") as f:
@@ -227,38 +303,41 @@ Shaan's combination of technical depth (ML, SQL, Python automation) with busines
             rag_content = repo.get("rag_content", "")
             readme_summary = repo.get("readme_summary", "")
             readme = repo.get("readme", "")
+            meta = {
+                "repo_name": name,
+                "url": repo.get("url", f"https://github.com/ShaanRaza/{name}"),
+                "language": repo.get("language", ""),
+                "topics": repo.get("topics", [])
+            }
 
-            # Primary chunk — full RAG content
             primary_content = rag_content or readme_summary or readme[:2000]
             if primary_content:
-                chunks.append(self._make_chunk(
-                    f"github_{name}",
-                    "github",
-                    f"GitHub Repository: {name}",
-                    primary_content,
-                    {
-                        "repo_name": name,
-                        "url": repo.get("url", f"https://github.com/ShaanRaza/{name}"),
-                        "language": repo.get("language", ""),
-                        "topics": repo.get("topics", [])
-                    }
-                ))
+                parts = recursive_chunk_text(primary_content)
+                for part_idx, part_text in enumerate(parts):
+                    suffix = f"_part{part_idx}" if len(parts) > 1 else ""
+                    chunks.append(self._make_chunk(
+                        f"github_{name}{suffix}",
+                        "github",
+                        f"GitHub Repository: {name}",
+                        part_text,
+                        meta
+                    ))
 
-            # If README is long, add a second chunk
             if len(readme) > 1000:
-                chunks.append(self._make_chunk(
-                    f"github_{name}_readme",
-                    "github",
-                    f"GitHub Repository README: {name}",
-                    f"README for {name}:\n{readme[:3000]}",
-                    {"repo_name": name}
-                ))
+                readme_parts = recursive_chunk_text(readme[:4000])
+                for part_idx, part_text in enumerate(readme_parts):
+                    chunks.append(self._make_chunk(
+                        f"github_{name}_readme_part{part_idx}",
+                        "github",
+                        f"GitHub Repository README: {name}",
+                        f"README for {name}:\n{part_text}",
+                        {"repo_name": name}
+                    ))
 
         print(f"[RAG] Loaded {len(chunks)} GitHub chunks for {len(repos)} repos")
         return chunks
 
     def _get_github_fallback_chunks(self) -> List[Dict]:
-        """Minimal fallback chunks if github_repos.json doesn't exist yet."""
         return [
             self._make_chunk(
                 "github_overview",
@@ -281,8 +360,6 @@ Shaan's combination of technical depth (ML, SQL, Python automation) with busines
 
     def _load_calendar_chunks(self) -> List[Dict]:
         chunks = []
-
-        # Try to load from the voice-agent calendar or local one
         calendar_paths = [CALENDAR_FILE, "../voice-agent-interview/calendar_store.json"]
         calendar_data = None
 
@@ -322,7 +399,6 @@ Shaan's combination of technical depth (ML, SQL, Python automation) with busines
                     {"source_file": "calendar_store.json"}
                 ))
         else:
-            # Static fallback availability note
             chunks.append(self._make_chunk(
                 "calendar_availability",
                 "calendar",
@@ -339,51 +415,95 @@ Shaan's combination of technical depth (ML, SQL, Python automation) with busines
         return chunks
 
     # ─────────────────────────────────────────────────────────────
-    # TF-IDF Index
+    # Hybrid Index: BM25 (lexical) + Chroma (semantic embeddings)
     # ─────────────────────────────────────────────────────────────
 
     def _build_index(self):
-        """Build TF-IDF matrix over all chunk contents."""
         texts = [c["content"] for c in self.chunks]
-        self.vectorizer = TfidfVectorizer(
-            max_features=8000,
-            ngram_range=(1, 2),
-            stop_words="english",
-            sublinear_tf=True
+        ids = [c["id"] for c in self.chunks]
+        self._id_to_index = {cid: i for i, cid in enumerate(ids)}
+
+        # 1. BM25 — pure lexical, in-memory, no embeddings required.
+        tokenized_corpus = [_tokenize(t) for t in texts]
+        self.bm25 = BM25Okapi(tokenized_corpus)
+        print(f"[RAG] BM25 index built over {len(texts)} chunks")
+
+        # 2. Chroma — semantic vectors via the bundled ONNX MiniLM embedder.
+        self._chroma_client = chromadb.PersistentClient(path=CHROMA_DIR)
+        try:
+            self._chroma_client.delete_collection(CHROMA_COLLECTION)
+        except Exception:
+            pass
+        self._chroma_collection = self._chroma_client.create_collection(
+            name=CHROMA_COLLECTION,
+            metadata={"hnsw:space": "cosine"}
         )
-        self.chunk_matrix = self.vectorizer.fit_transform(texts)
-        print(f"[RAG] TF-IDF index built: {self.chunk_matrix.shape}")
+
+        flat_metadatas = [self._flatten_metadata(c) for c in self.chunks]
+        # Chroma's add() batches internally; chunk sets here are small (tens of docs).
+        self._chroma_collection.add(ids=ids, documents=texts, metadatas=flat_metadatas)
+        print(f"[RAG] Chroma semantic index built: {self._chroma_collection.count()} vectors "
+              f"(embedding model: {EMBEDDING_MODEL_NAME})")
+
+    @staticmethod
+    def _flatten_metadata(chunk: Dict) -> Dict:
+        """Chroma metadata values must be str/int/float/bool — flatten and stringify."""
+        flat = {"source": chunk["source"], "section": chunk["section"]}
+        for k, v in chunk.get("metadata", {}).items():
+            if isinstance(v, (str, int, float, bool)):
+                flat[k] = v
+            else:
+                flat[k] = json.dumps(v)
+        return flat
 
     # ─────────────────────────────────────────────────────────────
-    # Retrieval
+    # Retrieval — Reciprocal Rank Fusion over BM25 + semantic search
     # ─────────────────────────────────────────────────────────────
 
-    def retrieve(self, query: str, top_k: int = 6, threshold: float = 0.03, force_calendar: bool = False) -> List[Dict]:
-        """Retrieve top-k relevant chunks for a query."""
+    def retrieve(self, query: str, top_k: int = 6, threshold: float = 0.0, force_calendar: bool = False) -> List[Dict]:
+        """Retrieve top-k relevant chunks for a query via hybrid BM25 + semantic RRF."""
         if not self.is_loaded:
             raise RuntimeError("Knowledge base is not loaded. Ensure synchronous startup load succeeded.")
 
-        # Boost chatbot backend repo queries when pronouns or generic project terms are used
         query_lower = query.lower()
         if any(w in query_lower for w in ["your", "this repo", "this project", "this chatbot", "chatbot repository", "chatbot backend", "chatbot code", "you change"]):
             query = query + " shaan-chatbot-backend"
 
-        query_vec = self.vectorizer.transform([query])
-        scores = cosine_similarity(query_vec, self.chunk_matrix)[0]
+        pool_size = min(top_k * 4, len(self.chunks))
 
-        top_indices = np.argsort(scores)[::-1][:top_k * 2]
+        # Lexical ranking (BM25)
+        bm25_scores = self.bm25.get_scores(_tokenize(query))
+        bm25_ranked_idx = np.argsort(bm25_scores)[::-1][:pool_size]
+        bm25_ranked_ids = [self.chunks[i]["id"] for i in bm25_ranked_idx if bm25_scores[i] > 0]
+
+        # Semantic ranking (Chroma / MiniLM embeddings)
+        semantic_ranked_ids: List[str] = []
+        try:
+            chroma_results = self._chroma_collection.query(query_texts=[query], n_results=pool_size)
+            semantic_ranked_ids = chroma_results.get("ids", [[]])[0]
+        except Exception as e:
+            print(f"[RAG] WARNING: semantic query failed, falling back to BM25 only: {e}")
+
+        # Reciprocal Rank Fusion
+        rrf_scores: Dict[str, float] = {}
+        for rank, cid in enumerate(bm25_ranked_ids):
+            rrf_scores[cid] = rrf_scores.get(cid, 0.0) + 1.0 / (RRF_K + rank + 1)
+        for rank, cid in enumerate(semantic_ranked_ids):
+            rrf_scores[cid] = rrf_scores.get(cid, 0.0) + 1.0 / (RRF_K + rank + 1)
+
+        ranked_ids = sorted(rrf_scores.items(), key=lambda kv: kv[1], reverse=True)
 
         results = []
         seen_sources = set()
-
-        for idx in top_indices:
-            score = float(scores[idx])
+        for cid, score in ranked_ids:
             if score < threshold:
                 continue
+            idx = self._id_to_index.get(cid)
+            if idx is None:
+                continue
             chunk = self.chunks[idx].copy()
-            chunk["score"] = score
+            chunk["score"] = round(score, 4)
 
-            # Deduplicate by section (avoid two chunks from the same section)
             section_key = f"{chunk['source']}::{chunk['section']}"
             if section_key in seen_sources:
                 continue
@@ -398,7 +518,7 @@ Shaan's combination of technical depth (ML, SQL, Python automation) with busines
             for chunk in self.chunks:
                 if chunk["id"] in fallback_ids:
                     c = chunk.copy()
-                    c["score"] = 0.01
+                    c["score"] = 0.0
                     results.append(c)
 
         if force_calendar:
@@ -414,7 +534,6 @@ Shaan's combination of technical depth (ML, SQL, Python automation) with busines
         return results
 
     def retrieve_and_build_context(self, query: str, top_k: int = 6, force_calendar: bool = False) -> tuple:
-        """Retrieve chunks and build a formatted context string with citations."""
         chunks = self.retrieve(query, top_k=top_k, force_calendar=force_calendar)
 
         if not chunks:
@@ -430,7 +549,7 @@ Shaan's combination of technical depth (ML, SQL, Python automation) with busines
                 "label": source_label,
                 "source": chunk["source"],
                 "section": chunk["section"],
-                "score": round(chunk.get("score", 0), 3),
+                "score": round(chunk.get("score", 0), 4),
                 "metadata": chunk.get("metadata", {}),
                 "content": chunk["content"]
             })
@@ -472,6 +591,9 @@ Shaan's combination of technical depth (ML, SQL, Python automation) with busines
         return {
             "total_chunks": len(self.chunks),
             "by_source": by_source,
-            "index_shape": list(self.chunk_matrix.shape) if self.chunk_matrix is not None else None,
+            "retrieval": "hybrid BM25 + semantic (RRF)",
+            "embedding_model": EMBEDDING_MODEL_NAME,
+            "vector_store": f"Chroma (persistent, {CHROMA_DIR})",
+            "chroma_vectors": self._chroma_collection.count() if self._chroma_collection else 0,
             "is_loaded": self.is_loaded
         }
