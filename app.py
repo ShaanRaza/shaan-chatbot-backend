@@ -313,10 +313,12 @@ def init_db():
                     print(f"[INFO] PostgreSQL calendar_slots table already has {count} slots.")
             conn.close()
         except Exception as e:
-            print(f"[CRITICAL ERROR] Failed to connect or initialize PostgreSQL database: {e}")
+            print(f"[ERROR] Failed to connect or initialize PostgreSQL database: {e}")
+            print("[WARN] Falling back to local JSON calendar storage. Bookings will NOT persist "
+                  "across restarts/redeploys until DATABASE_URL is fixed.")
             import traceback
             traceback.print_exc()
-            raise e
+            init_calendar_json()
     else:
         print("[INFO] No PostgreSQL DATABASE_URL found. Initializing local JSON calendar.")
         init_calendar_json()
