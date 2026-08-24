@@ -9,3 +9,7 @@ __pycache__/
 backend/config.json
 backend/google_credentials.json
 venv/
+oauth_client.json
+oauth_token.json
+backend/oauth_client.json
+backend/oauth_token.json

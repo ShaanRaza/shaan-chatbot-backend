@@ -167,6 +167,15 @@ def get_nvidia_api_key() -> Optional[str]:
     return config.get("gemini_api_key", "").strip() or config.get("groq_api_key", "").strip() or None
 
 
+def get_calendar_id() -> Optional[str]:
+    """Get the Google Calendar ID from env (survives redeploys) or config.json (ephemeral
+    on platforms like Render's free tier - lost on every restart)."""
+    env_id = os.environ.get("GOOGLE_CALENDAR_ID", "").strip()
+    if env_id:
+        return env_id
+    return get_config().get("google_calendar_id", "").strip() or None
+
+
 def init_nvidia():
     """Initialize LLM client(s) using openai SDK. Gemini (OpenAI-compatible endpoint) is
     the primary client when GEMINI_API_KEY is set. If GROQ_API_KEY is also set, Groq is
@@ -715,8 +724,7 @@ def get_calendar():
             conn.close()
 
     # Sync availability dynamically if Google Calendar is configured
-    config = get_config()
-    calendar_id = config.get("google_calendar_id")
+    calendar_id = get_calendar_id()
     service = get_calendar_service()
     
     if service and calendar_id:
@@ -860,8 +868,7 @@ def book_slot(name: str, email: str, date_str: str, time_str: str, phone: str = 
     }
 
     # Google Calendar Sync
-    config = get_config()
-    calendar_id = config.get("google_calendar_id")
+    calendar_id = get_calendar_id()
     service = get_calendar_service()
     event_link = None
     meet_link = None
@@ -1891,8 +1898,7 @@ def api_cancel():
     slots = get_calendar()
     cancelled = []
 
-    config = get_config()
-    calendar_id = config.get("google_calendar_id")
+    calendar_id = get_calendar_id()
     service = get_calendar_service()
 
     for s in slots:
@@ -1934,8 +1940,7 @@ def api_reset_bookings():
     """Reset all slot statuses to 'available' and empty contacts_store.json after deleting Google Calendar events silently."""
     # 1. Silently delete all active Google Calendar events
     service = get_calendar_service()
-    config = get_config()
-    calendar_id = config.get("google_calendar_id")
+    calendar_id = get_calendar_id()
     target_cal_id = calendar_id.strip() if (calendar_id and "@" in calendar_id) else "primary"
 
     if service and target_cal_id:
