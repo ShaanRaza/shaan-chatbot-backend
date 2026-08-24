@@ -966,6 +966,48 @@ def _save_contact(name, email, phone, date_str, time_str, google_event_link=None
         conn.close()
 
 
+def _delete_contact(email: str, date_str: str, time_str: str):
+    """Remove the stored contact/booking record for a cancelled slot, so cancelled
+    bookings don't linger in the admin panel's contact list."""
+    email_clean = (email or "").strip().lower()
+    conn = get_db_connection()
+
+    if not conn:
+        if not os.path.exists(CONTACTS_FILE):
+            return
+        try:
+            with open(CONTACTS_FILE) as f:
+                contacts = json.load(f)
+        except Exception:
+            return
+        remaining = [
+            c for c in contacts
+            if not (
+                (c.get("email", "").strip().lower() == email_clean)
+                and c.get("date") == date_str
+                and c.get("time") == time_str
+            )
+        ]
+        try:
+            with open(CONTACTS_FILE, "w") as f:
+                json.dump(remaining, f, indent=2)
+        except Exception as e:
+            print(f"[ERROR] Failed to remove contact from JSON store: {e}")
+        return
+
+    try:
+        with conn.cursor() as cur:
+            cur.execute("""
+                DELETE FROM bookings
+                WHERE LOWER(email) = %s AND date_str = %s AND time_str = %s;
+            """, (email_clean, date_str, time_str))
+            conn.commit()
+    except Exception as e:
+        print(f"[ERROR] Failed to delete booking from database: {e}")
+    finally:
+        conn.close()
+
+
 # ─────────────────────────────────────────────────────────────────
 # Observability Logging
 # ─────────────────────────────────────────────────────────────────
@@ -1919,6 +1961,8 @@ def api_cancel():
                 print(f"[OK] Deleted Google Calendar event: {event_id}")
             except Exception as e:
                 print(f"[WARN] Failed to delete Google Calendar event {event_id}: {e}")
+
+        _delete_contact(email, s["date"], s["time"])
 
         s["status"] = "available"
         s["booked_by"] = None
