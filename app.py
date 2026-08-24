@@ -1891,6 +1891,10 @@ def api_cancel():
     slots = get_calendar()
     cancelled = []
 
+    config = get_config()
+    calendar_id = config.get("google_calendar_id")
+    service = get_calendar_service()
+
     for s in slots:
         booked_by = s.get("booked_by") or {}
         slot_email = booked_by.get("email", "").strip().lower()
@@ -1900,6 +1904,15 @@ def api_cancel():
             continue
         if time_str and s["time"].upper().replace(" ","") != time_str.upper().replace(" ",""):
             continue
+
+        event_id = booked_by.get("google_event_id")
+        if event_id and service and calendar_id:
+            try:
+                service.events().delete(calendarId=calendar_id, eventId=event_id, sendUpdates='all').execute()
+                print(f"[OK] Deleted Google Calendar event: {event_id}")
+            except Exception as e:
+                print(f"[WARN] Failed to delete Google Calendar event {event_id}: {e}")
+
         s["status"] = "available"
         s["booked_by"] = None
         cancelled.append({"date": s["date"], "time": s["time"]})
