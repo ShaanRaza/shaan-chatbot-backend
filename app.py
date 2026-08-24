@@ -370,8 +370,7 @@ def init_calendar():
     print("[INFO] Testing Google Calendar connection on startup...")
     service = get_calendar_service()
     if service:
-        config = get_config()
-        calendar_id = config.get("google_calendar_id", "primary")
+        calendar_id = get_calendar_id() or "primary"
         try:
             # Perform a lightweight API call to test connection and permissions
             print(f"[INFO] Attempting to list events for calendar ID: {calendar_id}...")
